@@ -1,0 +1,3 @@
+# Escludere file di credenziali
+credentials/
+*.pyc
