@@ -1,3 +1,4 @@
 # Escludere file di credenziali
 credentials/
 *.pyc
+.streamlit/secrets.toml
