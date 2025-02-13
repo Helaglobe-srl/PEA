@@ -71,6 +71,10 @@ col1, col2 = st.columns(2)
 with col1:
     nome_referente = st.text_input("Nome Referente *")
 with col2:
+    cognome_referente = st.text_input("Cognome Referente *")
+ruolo = st.text_input("Ruolo *")
+mail = st.text_input("Mail *")
+telefono = st.text_input("Telefono *")
 area_terapeutica = st.selectbox(
     "Area Terapeutica *",
     options=AREE_TERAPEUTICHE,
@@ -90,7 +94,7 @@ uploaded_file = st.file_uploader(
 )
 
 # 1. dopo aver caricato la presentazione, si preme il bottone Analizza Presentazione
-if st.button("Analizza Presentazione", disabled=not uploaded_file):
+if st.button("Carica Presentazione", disabled=not uploaded_file):
     with st.spinner("Analisi della presentazione in corso..."):
         try:
             with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
@@ -125,13 +129,13 @@ if st.session_state["analysis_complete"]:
     descrizione = st.text_area(
         "Descrizione Progetto:",
         value=st.session_state["extracted_content"]["descrizione"],
-        height=200
+        height=300
     )
     
     obiettivo = st.text_area(
         "Obiettivo Progetto:",
         value=st.session_state["extracted_content"]["obiettivo"],
-        height=100
+        height=300
     )
     
     # controlla se tutti i campi obbligatori sono compilati
