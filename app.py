@@ -5,6 +5,7 @@ from ppt_analyzer import analyze_ppt
 from n8n_handler import send_data_to_n8n
 import tempfile
 import time
+from email_handler import send_confirmation_email
 
 if "uploaded_file" not in st.session_state:
     st.session_state["uploaded_file"] = None
@@ -190,18 +191,23 @@ if st.session_state["analysis_complete"]:
                 
                 if send_data_to_n8n(form_data, st.session_state["file_id"], summary_data):
                     st.balloons()
-                    time.sleep(1)
                     
-                    # 5. si resetta tutte le variabili di sessione
-                    st.session_state["analysis_complete"] = False
-                    st.session_state["extracted_content"] = None
-                    st.session_state["ppt_content"] = None
-                    st.session_state["uploaded_file"] = None
-                    st.session_state["reset_uploader"] = True
-                    st.session_state["file_uploaded"] = False
-                    st.session_state["file_id"] = None
-                    
-                    # 6. vai alla pagina di successo
-                    st.switch_page("pages/success.py")
+                    # invio email di conferma
+                    if send_confirmation_email(form_data["mail"], form_data):
+                        time.sleep(1)
+                        
+                        # resetta tutte le variabili di sessione
+                        st.session_state["analysis_complete"] = False
+                        st.session_state["extracted_content"] = None
+                        st.session_state["ppt_content"] = None
+                        st.session_state["uploaded_file"] = None
+                        st.session_state["reset_uploader"] = True
+                        st.session_state["file_uploaded"] = False
+                        st.session_state["file_id"] = None
+                        
+                        # vai alla pagina di conferma iscrizione
+                        st.switch_page("pages/success.py")
+                    else:
+                        st.warning("Iscrizione completata ma si è verificato un errore nell'invio dell'email di conferma.")
             except Exception as e:
                 st.error(f"Si è verificato un errore durante il caricamento: {str(e)}")
