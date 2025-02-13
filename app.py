@@ -28,8 +28,16 @@ st.set_page_config(
     page_icon="📊",
 )
 
-st.image("images/logo_pea.jpg", width=200)
-st.title("Carica la tua presentazione")
+col1, col2, col3 = st.columns([1,2,1])
+with col2:
+    st.image("images/logo_pea.jpg", width=200)
+
+
+st.markdown("""
+    <h1 style='text-align: center; margin-bottom: 0;'>Form di Iscrizione</h1>
+    <h2 style='text-align: center; margin-top: 0; margin-bottom: 0;'>Patient Engagement Award</h2>
+    <h3 style='text-align: center; color: #666666; margin-top: 0; margin-bottom: 40px;'>3rd Edition</h3>
+    """, unsafe_allow_html=True)
 
 # campi obbligatori
 candidato = st.text_input("Candidato *")
