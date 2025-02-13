@@ -39,6 +39,31 @@ st.markdown("""
     <h3 style='text-align: center; color: #666666; margin-top: 0; margin-bottom: 40px;'>3rd Edition</h3>
     """, unsafe_allow_html=True)
 
+# Aree Terapeutiche
+AREE_TERAPEUTICHE = [
+    "Allergologia e Immunologia",
+    "Cardiologia",
+    "Dermatologia",
+    "Diabetologia",
+    "Ematologia",
+    "Endocrinologia",
+    "Gastroenterologia",
+    "Geriatria",
+    "Ginecologia",
+    "Malattie Infettive",
+    "Malattie Rare",
+    "Medicina Interna",
+    "Nefrologia",
+    "Neurologia",
+    "Oncologia",
+    "Ortopedia",
+    "Pediatria",
+    "Pneumologia",
+    "Psichiatria",
+    "Reumatologia",
+    "Urologia"
+]
+
 # campi obbligatori
 candidato = st.text_input("Candidato *")
 titolo_progetto = st.text_input("Titolo Progetto *")
@@ -46,11 +71,12 @@ col1, col2 = st.columns(2)
 with col1:
     nome_referente = st.text_input("Nome Referente *")
 with col2:
-    cognome_referente = st.text_input("Cognome Referente *")
-ruolo = st.text_input("Ruolo *")
-mail = st.text_input("Mail *")
-telefono = st.text_input("Telefono *")
-area_terapeutica = st.text_input("Area Terapeutica *")
+area_terapeutica = st.selectbox(
+    "Area Terapeutica *",
+    options=AREE_TERAPEUTICHE,
+    index=AREE_TERAPEUTICHE.index("Oncologia") if "Oncologia" in AREE_TERAPEUTICHE else 0,
+    help="Seleziona o cerca un'area terapeutica"
+)
 
 st.markdown("<span style='color: red; font-size: 0.8em'>* Campi obbligatori</span>", unsafe_allow_html=True)
 
