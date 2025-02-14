@@ -6,9 +6,8 @@ from n8n_handler import send_data_to_n8n
 import tempfile
 import time
 from email_handler import send_confirmation_email
+from utils.validators import validate_phone_number, validate_email
 
-if "uploaded_file" not in st.session_state:
-    st.session_state["uploaded_file"] = None
 if "file_upload_ids" not in st.session_state:
     st.session_state["file_upload_ids"] = None
 if "extracted_content" not in st.session_state:
@@ -83,7 +82,12 @@ area_terapeutica = st.selectbox(
     help="Seleziona o cerca un'area terapeutica"
 )
 
-st.markdown("<span style='color: red; font-size: 0.8em'>* Campi obbligatori</span>", unsafe_allow_html=True)
+# messaggi di validazione telefono e email
+if mail and not validate_email(mail):
+    st.error("Per favore inserisci un indirizzo email valido (esempio: nome@dominio.com)")
+if telefono and not validate_phone_number(telefono):
+    st.error("Per favore inserisci un numero di telefono valido (esempio: 3401234567 o +39 340 1234567)")
+
 
 # ppt uploader
 key = "file_uploader_" + str(int(time.time())) if st.session_state["reset_uploader"] else "file_uploader"
@@ -154,6 +158,10 @@ if st.session_state["analysis_complete"]:
     empty_fields = [field for field, value in required_fields.items() if not value.strip()]
     if empty_fields:
         st.error(f"Per favore compila i seguenti campi obbligatori: {', '.join(empty_fields)}")
+    elif not validate_email(mail):
+        st.error("Per favore correggi l'indirizzo email prima di procedere")
+    elif not validate_phone_number(telefono):
+        st.error("Per favore correggi il numero di telefono prima di procedere")
     else:
         if st.button("Sottometti Iscrizione"):
             try:
