@@ -21,14 +21,13 @@ def upload_to_drive(service, file_name, file_path, folder_id):
     }
     
     media = MediaFileUpload(
-        file_path,
-        resumable=True
+        file_path
     )
-    
+        
     file = service.files().create(
         body=file_metadata,
         media_body=media,
         fields="id"
     ).execute()
-    
+        
     return file.get("id")

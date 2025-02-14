@@ -12,7 +12,7 @@ def clean_text(text):
         return text
     return text
 
-def send_data_to_n8n(form_data, file_id, summary_data):
+def send_data_to_n8n(form_data, file_ids, summary_data):
     """
     Invia i dati del form a n8n
     """
@@ -30,7 +30,9 @@ def send_data_to_n8n(form_data, file_id, summary_data):
         "AREA TERAPEUTICA": form_data["area_terapeutica"],
         "DESCRIZIONE PROGETTO": clean_text(summary_data["descrizione"]),
         "OBIETTIVO PROGETTO": clean_text(summary_data["obiettivo"]),
-        "file_id": file_id
+        "PPT_ID": file_ids["ppt"],
+        "MARCHIO_ID": file_ids["marchio"],
+        "PROJECT_IMAGE_ID": file_ids["image"]
     }
         
     try:

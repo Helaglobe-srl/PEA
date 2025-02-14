@@ -18,8 +18,14 @@ if "form_data" not in st.session_state:
     st.session_state["form_data"] = None
 if "reset_uploader" not in st.session_state:
     st.session_state["reset_uploader"] = False
-if "file_uploaded" not in st.session_state:
-    st.session_state["file_uploaded"] = False
+if "files_uploaded_to_drive" not in st.session_state:
+    st.session_state["files_uploaded_to_drive"] = False
+if "ppt_file_content" not in st.session_state:
+    st.session_state["ppt_file_content"] = None
+if "marchio_content" not in st.session_state:
+    st.session_state["marchio_content"] = None
+if "marchio_type" not in st.session_state:
+    st.session_state["marchio_type"] = None
 
 FOLDER_ID = st.secrets["drive_folder_id"]
 
@@ -88,32 +94,62 @@ if mail and not validate_email(mail):
 if telefono and not validate_phone_number(telefono):
     st.error("Per favore inserisci un numero di telefono valido (esempio: 3401234567 o +39 340 1234567)")
 
+# sezione di caricamento files
+st.subheader("Caricamento File")
 
-# ppt uploader
+# - Logo
+marchio_file = st.file_uploader(
+    "marchio aziendale in formato vettoriale o in alta risoluzione *", 
+    type=["png", "jpg", "jpeg"],
+    help="Carica il marchio aziendale",
+    key="marchio_uploader"
+)
+
+# - Immagine di progetto
+image_file = st.file_uploader(
+    "Immagine rappresentativa del progetto (1920x1080 px) *", 
+    type=["png", "jpg", "jpeg"],
+    help="Carica un'immagine in formato 1920x1080 pixel",
+    key="image_uploader"
+)
+
+# - PPT 
 key = "file_uploader_" + str(int(time.time())) if st.session_state["reset_uploader"] else "file_uploader"
-uploaded_file = st.file_uploader(
-    "Carica la tua presentazione", 
+ppt_file = st.file_uploader(
+    "Presentazione del progetto *", 
     type=["ppt", "pptx"],
     help="Carica un file PowerPoint",
     key=key
 )
 
-# 1. dopo aver caricato la presentazione, si preme il bottone Analizza Presentazione
-if st.button("Carica Presentazione", disabled=not uploaded_file):
+st.markdown("<span style='color: red; font-size: 0.8em'>* Campi obbligatori</span>", unsafe_allow_html=True)
+
+# controllo che tutti i file siano stati caricati
+if not all([marchio_file, image_file, ppt_file]):
+    st.warning("Carica tutti i file richiesti prima di procedere.")
+
+# salva i file caricati in sessione
+if marchio_file:
+    st.session_state["marchio_content"] = marchio_file.getvalue()
+    st.session_state["marchio_type"] = marchio_file.name.split('.')[-1]
+if image_file:
+    st.session_state["image_content"] = image_file.getvalue()
+    st.session_state["image_type"] = image_file.name.split('.')[-1]
+
+# 1. analisi della presentazione
+if st.button("Carica Files", disabled=not all([marchio_file, image_file, ppt_file])):
     with st.spinner("Analisi della presentazione in corso..."):
         try:
-            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
-                temp_file.write(uploaded_file.getbuffer())
+            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{ppt_file.name.split('.')[-1]}") as temp_file:
+                temp_file.write(ppt_file.getbuffer())
                 temp_file_path = temp_file.name
 
-            # 2. analizza la presentazione senza caricare su Drive
             summary_data = analyze_ppt(temp_file_path)
-            
             os.unlink(temp_file_path)
             
             st.session_state["extracted_content"] = summary_data
             st.session_state["analysis_complete"] = True
-            st.session_state["ppt_content"] = uploaded_file.getvalue()  # salva il contenuto della presentazione temporaneamente
+            st.session_state["ppt_file_content"] = ppt_file.getvalue()
             
             st.success("✅ Presentazione analizzata con successo!")
             st.rerun()
@@ -121,7 +157,7 @@ if st.button("Carica Presentazione", disabled=not uploaded_file):
         except Exception as e:
             st.error(f"Si è verificato un errore durante l'analisi: {str(e)}")
 
-# mostra i dati estratti e il bottone Sottometti Iscrizione solo dopo che l'analisi è completa
+# 2. mostra i dati estratti e il bottone Sottometti Iscrizione solo dopo che l'analisi è completa
 if st.session_state["analysis_complete"]:
     st.subheader("Dati estratti dalla presentazione")
     
@@ -164,58 +200,89 @@ if st.session_state["analysis_complete"]:
         st.error("Per favore correggi il numero di telefono prima di procedere")
     else:
         if st.button("Sottometti Iscrizione"):
-            try:
-                # 3. prima di inviare i dati a n8n, si carica la presentazione su GDrive
-                if not st.session_state["file_uploaded"]:
-                    with tempfile.NamedTemporaryFile(delete=False, suffix=".pptx") as temp_file:
-                        temp_file.write(st.session_state["ppt_content"])
-                        temp_file_path = temp_file.name
-
-                    service = authenticate_drive()
-                    original_filename = uploaded_file.name
-                    file_id = upload_to_drive(service, original_filename, temp_file_path, FOLDER_ID)
-                    st.session_state["file_uploaded"] = True
-                    st.session_state["file_id"] = file_id
-                    
-                    os.unlink(temp_file_path)
-
-                # 4. infine si invia i dati a n8n che li salva come nuovo record nel google sheet iscrizioni
-                form_data = {
-                    "candidato": candidato,
-                    "titolo_progetto": titolo_progetto,
-                    "nome_referente": nome_referente,
-                    "cognome_referente": cognome_referente,
-                    "ruolo": ruolo,
-                    "mail": mail,
-                    "telefono": telefono,
-                    "area_terapeutica": area_terapeutica
-                }
-                
-                summary_data = {
-                    "categoria": categoria,
-                    "descrizione": descrizione,
-                    "obiettivo": obiettivo
-                }
-                
-                if send_data_to_n8n(form_data, st.session_state["file_id"], summary_data):
-                    st.balloons()
-                    
-                    # invio email di conferma
-                    if send_confirmation_email(form_data["mail"], form_data):
-                        time.sleep(1)
+            with st.spinner("Iscrizione in corso..."):
+                try:
+                    # 3. prima di inviare i dati a n8n, si carica la presentazione su GDrive
+                    if not st.session_state["files_uploaded_to_drive"]:
+                        current_date = time.strftime("%Y%m%d")
+                        clean_name = lambda s: s.lower().replace(" ", "_")
+                        base_filename = f"{current_date}_{clean_name(candidato)}_{clean_name(titolo_progetto)}"
                         
-                        # resetta tutte le variabili di sessione
-                        st.session_state["analysis_complete"] = False
-                        st.session_state["extracted_content"] = None
-                        st.session_state["ppt_content"] = None
-                        st.session_state["uploaded_file"] = None
-                        st.session_state["reset_uploader"] = True
-                        st.session_state["file_uploaded"] = False
-                        st.session_state["file_id"] = None
-                        
-                        # vai alla pagina di conferma iscrizione
-                        st.switch_page("pages/success.py")
-                    else:
-                        st.warning("Iscrizione completata ma si è verificato un errore nell'invio dell'email di conferma.")
-            except Exception as e:
-                st.error(f"Si è verificato un errore durante il caricamento: {str(e)}")
+                        try:
+                            service = authenticate_drive()
+                            file_uploads = [
+                                ("ppt", "_presentazione", st.session_state["ppt_file_content"]),
+                                ("marchio", "_marchio", st.session_state["marchio_content"]),
+                                ("image", "_immagine", st.session_state["image_content"])
+                            ]
+
+                            file_ids = {}
+                            for file_key, suffix, content in file_uploads:
+                                if content is None:
+                                    st.error(f"Per favore carica il file {file_key} prima di procedere")
+                                    continue
+                                
+                                with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                                    temp_file.write(content)
+                                    temp_path = temp_file.name
+                                
+                                # aggiungo un suffisso univoco al nome del file (_presentazione, _marchio, _immagine)
+                                if file_key == "ppt":
+                                    filename = f"{base_filename}{suffix}.pptx"
+                                elif file_key == "marchio":
+                                    filename = f"{base_filename}{suffix}.{st.session_state['marchio_type']}"
+                                else:  
+                                    filename = f"{base_filename}{suffix}.{st.session_state['image_type']}"
+                                
+                                try:
+                                    file_ids[file_key] = upload_to_drive(service, filename, temp_path, FOLDER_ID)
+                                    os.unlink(temp_path)
+                                except Exception as e:
+                                    st.error(f"Error uploading {file_key}: {str(e)}")
+
+                            st.session_state["files_uploaded_to_drive"] = True
+                            st.session_state["file_upload_ids"] = file_ids
+                            
+                        except Exception as e:
+                            st.error(f"Si è verificato un errore durante il caricamento dei file: {str(e)}")
+                            st.stop()
+
+                    # 4. infine si invia i dati a n8n che li salva come nuovo record nel google sheet iscrizioni
+                    form_data = {
+                        "candidato": candidato,
+                        "titolo_progetto": titolo_progetto,
+                        "nome_referente": nome_referente,
+                        "cognome_referente": cognome_referente,
+                        "ruolo": ruolo,
+                        "mail": mail,
+                        "telefono": telefono,
+                        "area_terapeutica": area_terapeutica
+                    }
+                    
+                    summary_data = {
+                        "categoria": categoria,
+                        "descrizione": descrizione,
+                        "obiettivo": obiettivo
+                    }
+                    
+                    if send_data_to_n8n(form_data, st.session_state["file_upload_ids"], summary_data):
+                                                
+                        # invio email di conferma
+                        if send_confirmation_email(form_data["mail"], form_data):
+                            st.balloons()
+                            # resetta tutte le variabili di sessione
+                            st.session_state["analysis_complete"] = False
+                            st.session_state["extracted_content"] = None
+                            st.session_state["ppt_file_content"] = None
+                            st.session_state["reset_uploader"] = True
+                            st.session_state["files_uploaded_to_drive"] = False
+                            st.session_state["file_upload_ids"] = None
+                            
+                            # vai alla pagina di conferma iscrizione
+                            st.success("✅ Iscrizione completata con successo!")
+                            time.sleep(1)
+                            st.switch_page("pages/success.py")
+                        else:
+                            st.warning("Iscrizione completata ma si è verificato un errore nell'invio dell'email di conferma.")
+                except Exception as e:
+                    st.error(f"Si è verificato un errore durante l'iscrizione: {str(e)} \n Contattare l'Amministratore {st.secrets['email']['sender']}")
