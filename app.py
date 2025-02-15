@@ -99,9 +99,9 @@ st.subheader("Caricamento File")
 
 # - Logo
 marchio_file = st.file_uploader(
-    "marchio aziendale in formato vettoriale o in alta risoluzione *", 
+    "Logo aziendale (jpg, png, jpeg) *", 
     type=["png", "jpg", "jpeg"],
-    help="Carica il marchio aziendale",
+    help="Carica il logo aziendale",
     key="marchio_uploader"
 )
 
