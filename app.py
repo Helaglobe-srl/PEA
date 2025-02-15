@@ -161,6 +161,11 @@ if st.button("Carica Files", disabled=not all([marchio_file, image_file, ppt_fil
 if st.session_state["analysis_complete"]:
     st.subheader("Dati estratti dalla presentazione")
     
+    st.info("""
+        I campi seguenti sono stati estratti automaticamente dalla presentazione, puoi modificarli se necessario. 
+        Una volta verificato che i dati siano corretti, premi il pulsante 'Sottometti Iscrizione' per completare la procedura.
+    """)
+    
     categoria = st.text_area(
         "Categoria:",
         value=st.session_state["extracted_content"]["categoria"],
