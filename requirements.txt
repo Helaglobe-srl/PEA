@@ -5,7 +5,4 @@ google-auth-httplib2
 google-api-python-client
 python-pptx
 openai
-requests
-numpy 
-matplotlib 
-scipy
+requests  
