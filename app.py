@@ -172,16 +172,32 @@ if st.session_state["analysis_complete"]:
         height=100
     )
     
-    descrizione = st.text_area(
-        "Descrizione Progetto:",
-        value=st.session_state["extracted_content"]["descrizione"],
-        height=300
+    info_giuria = st.text_area(
+        "Informazioni necessarie alla giuria:",
+        value=st.session_state["extracted_content"]["info_giuria"],
+        height=400,
+        help="Questa sezione deve contenere una descrizione dettagliata del progetto che verrà sottoposta alla giuria, includendo obiettivi e risultati."
     )
     
-    obiettivo = st.text_area(
-        "Obiettivo Progetto:",
-        value=st.session_state["extracted_content"]["obiettivo"],
-        height=300
+    sintesi_ebook = st.text_area(
+        "Sintesi informazioni per l'Ebook (max 300 parole):",
+        value=st.session_state["extracted_content"]["sintesi_ebook"],
+        height=200,
+        help="Questa sintesi verrà utilizzata per l'Ebook. Massimo 300 parole."
+    )
+    
+    obiettivi = st.text_area(
+        "Obiettivi:",
+        value=st.session_state["extracted_content"]["obiettivi"],
+        height=200,
+        help="Lista degli obiettivi principali del progetto"
+    )
+    
+    risultati = st.text_area(
+        "Risultati:",
+        value=st.session_state["extracted_content"]["risultati"],
+        height=200,
+        help="Lista dei risultati principali raggiunti"
     )
     
     # controlla se tutti i campi obbligatori sono compilati
@@ -266,8 +282,10 @@ if st.session_state["analysis_complete"]:
                     
                     summary_data = {
                         "categoria": categoria,
-                        "descrizione": descrizione,
-                        "obiettivo": obiettivo
+                        "info_giuria": info_giuria,
+                        "sintesi_ebook": sintesi_ebook,
+                        "obiettivi": obiettivi,
+                        "risultati": risultati
                     }
                     
                     if send_data_to_n8n(form_data, st.session_state["file_upload_ids"], summary_data):

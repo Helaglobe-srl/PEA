@@ -28,8 +28,10 @@ def send_data_to_n8n(form_data, file_ids, summary_data):
         "MAIL": form_data["mail"],
         "TELEFONO": form_data["telefono"],
         "AREA TERAPEUTICA": form_data["area_terapeutica"],
-        "DESCRIZIONE PROGETTO": clean_text(summary_data["descrizione"]),
-        "OBIETTIVO PROGETTO": clean_text(summary_data["obiettivo"]),
+        "INFO_GIURIA": clean_text(summary_data["info_giuria"]),
+        "SINTESI_EBOOK": clean_text(summary_data["sintesi_ebook"]),
+        "OBIETTIVI": clean_text(summary_data["obiettivi"]),
+        "RISULTATI": clean_text(summary_data["risultati"]),
         "PPT_ID": file_ids["ppt"],
         "MARCHIO_ID": file_ids["marchio"],
         "PROJECT_IMAGE_ID": file_ids["image"]

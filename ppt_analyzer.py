@@ -19,20 +19,28 @@ def extract_text_from_ppt(file_path):
 
 def analyze_with_gpt(text_content):
     """
-    Analizza il testo estratto usando GPT per ottenere categoria, descrizione e obiettivo
+    Analizza il testo estratto usando GPT per ottenere i campi richiesti
     """
     client = OpenAI(api_key=st.secrets["openai_api_key"])
     
     prompt = f"""Analizza questa presentazione PowerPoint e fornisci una risposta strutturata con questi elementi:
 
     1. CATEGORIA: [specifica una sola categoria tra: ACCESSO E POLICY MAKING, AWARENESS, EMPOWERMENT, PATIENT EXPERIENCE, PATIENT SUPPORT PROGRAM]
-    2. DESCRIZIONE: [fornisci un riassunto dettagliato del progetto evitando l'uso di virgolette doppie (") - usa solo virgolette singole (') se necessario]
-    3. OBIETTIVO: [descrivi l'obiettivo principale del progetto evitando l'uso di virgolette doppie (") - usa solo virgolette singole (') se necessario]
+    
+    2. INFORMAZIONI NECESSARIE ALLA GIURIA: [fornisci una descrizione molto dettagliata del progetto, includendo obiettivi e risultati.]
+    
+    3. SINTESI INFORMAZIONI PER L'EBOOK: [riassumi le informazioni principali del progetto in massimo 300 parole, mantenendo gli elementi chiave]
+    
+    4. OBIETTIVI: [elenca in forma di bullet points (usando il carattere -) i principali obiettivi del progetto in modo conciso]
+    
+    5. RISULTATI: [elenca in forma di bullet points (usando il carattere -) i principali risultati raggiunti in modo conciso]
 
     Usa esattamente questi delimitatori nella tua risposta:
     <CATEGORIA>categoria</CATEGORIA>
-    <DESCRIZIONE>descrizione</DESCRIZIONE>
-    <OBIETTIVO>obiettivo</OBIETTIVO>
+    <INFO_GIURIA>informazioni complete</INFO_GIURIA>
+    <SINTESI_EBOOK>sintesi breve</SINTESI_EBOOK>
+    <OBIETTIVI>lista obiettivi</OBIETTIVI>
+    <RISULTATI>lista risultati</RISULTATI>
 
     IMPORTANTE: 
     - Non usare MAI virgolette doppie (") nel testo
@@ -48,7 +56,7 @@ def analyze_with_gpt(text_content):
             {"role": "system", "content": "Sei un assistente esperto nell'analisi di presentazioni PowerPoint. Fornisci riassunti strutturati e completi."},
             {"role": "user", "content": prompt}
         ],
-        max_tokens=1500,
+        max_tokens=2000,
         temperature=0.7
     )
     
@@ -59,13 +67,17 @@ def extract_sections(gpt_response):
     Estrae le sezioni dalla risposta di GPT
     """
     categoria = re.search(r'<CATEGORIA>(.*?)</CATEGORIA>', gpt_response, re.DOTALL)
-    descrizione = re.search(r'<DESCRIZIONE>(.*?)</DESCRIZIONE>', gpt_response, re.DOTALL)
-    obiettivo = re.search(r'<OBIETTIVO>(.*?)</OBIETTIVO>', gpt_response, re.DOTALL)
+    info_giuria = re.search(r'<INFO_GIURIA>(.*?)</INFO_GIURIA>', gpt_response, re.DOTALL)
+    sintesi_ebook = re.search(r'<SINTESI_EBOOK>(.*?)</SINTESI_EBOOK>', gpt_response, re.DOTALL)
+    obiettivi = re.search(r'<OBIETTIVI>(.*?)</OBIETTIVI>', gpt_response, re.DOTALL)
+    risultati = re.search(r'<RISULTATI>(.*?)</RISULTATI>', gpt_response, re.DOTALL)
     
     return {
         "categoria": categoria.group(1).strip() if categoria else "Non specificata",
-        "descrizione": descrizione.group(1).strip() if descrizione else "Non disponibile",
-        "obiettivo": obiettivo.group(1).strip() if obiettivo else "Non specificato"
+        "info_giuria": info_giuria.group(1).strip() if info_giuria else "Non disponibile",
+        "sintesi_ebook": sintesi_ebook.group(1).strip() if sintesi_ebook else "Non disponibile",
+        "obiettivi": obiettivi.group(1).strip() if obiettivi else "Non specificati",
+        "risultati": risultati.group(1).strip() if risultati else "Non specificati"
     }
 
 def analyze_ppt(file_path):
