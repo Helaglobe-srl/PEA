@@ -5,12 +5,19 @@ st.set_page_config(page_title="Iscrizione Completata", page_icon="✅")
 st.image("images/logo_pea.jpg", width=200)
 st.title("✅ Iscrizione completata con successo!")
 
-# messaggio di conferma email
+# messaggio di conferma dell'iscrizione
 st.info("""
-    Riceverai un'email di conferma dell'avvenuta iscrizione con il riepilogo dei dati inseriti 
-    al tuo indirizzo email.
-    
-    Controlla la tua casella di posta per tutti i dettagli.
+    Grazie per aver candidato il tuo progetto!  
+
+    Riceverai un'e-mail di conferma, con il riepilogo dei dati inseriti.  
+
+    Controlla la tua casella di posta per tutti i dettagli. Se non ricevi l'email, ti preghiamo di controllare anche la cartella dello spam. 
+
+    Per eventuali necessità scrivi a pea@helaglobe.com o chiama al numero 055.4939527.  
+
+    Grazie, 
+
+    Il team Helaglobe 
 """)
 
 # bottone Torna alla Home
