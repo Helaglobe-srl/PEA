@@ -31,8 +31,8 @@ if "marchio_type" not in st.session_state:
 FOLDER_ID = st.secrets["drive_folder_id"]
 
 st.set_page_config(
-    page_title="Iscrizione PEA",
-    page_icon="📊",
+    page_title="Iscrizione PEA 2025",
+    page_icon="🏆"
 )
 
 col1, col2, col3 = st.columns([1,2,1])
