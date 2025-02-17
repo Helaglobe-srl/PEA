@@ -313,7 +313,8 @@ if st.session_state["analysis_complete"]:
                     if send_data_to_n8n(form_data, st.session_state["file_upload_ids"], summary_data):
                                                 
                         # invio email di conferma
-                        if send_confirmation_email(form_data["mail"], form_data):
+                        email_result = send_confirmation_email(form_data["mail"], form_data)
+                        if email_result is True:
                             st.balloons()
                             # resetta tutte le variabili di sessione
                             st.session_state["analysis_complete"] = False
@@ -328,6 +329,13 @@ if st.session_state["analysis_complete"]:
                             time.sleep(1)
                             st.switch_page("pages/success.py")
                         else:
-                            st.warning("Iscrizione completata ma si è verificato un errore nell'invio dell'email di conferma.")
+                            # mostra un messaggio di warning con l'errore specifico sul mancato recapito mail
+                            st.warning(f"""
+                                La tua iscrizione è stata registrata correttamente, ma non è stato possibile inviare l'email di conferma.
+                                
+                                Motivo: {email_result}
+                                
+                                Per favore contatta il supporto all'indirizzo {st.secrets['email']['sender']} per ricevere assistenza.
+                            """)
                 except Exception as e:
                     st.error(f"Si è verificato un errore durante l'iscrizione: {str(e)} \n Contattare l'Amministratore {st.secrets['email']['sender']}")
