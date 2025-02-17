@@ -210,6 +210,7 @@ if st.session_state["analysis_complete"]:
     # controlla se tutti i campi obbligatori sono compilati
     required_fields = {
         "Candidato": candidato,
+        "Ente": ente,
         "Titolo Progetto": titolo_progetto,
         "Nome Referente": nome_referente,
         "Cognome Referente": cognome_referente,
@@ -278,6 +279,7 @@ if st.session_state["analysis_complete"]:
                     # 4. infine si invia i dati a n8n che li salva come nuovo record nel google sheet iscrizioni
                     form_data = {
                         "candidato": candidato,
+                        "ente": ente,
                         "titolo_progetto": titolo_progetto,
                         "nome_referente": nome_referente,
                         "cognome_referente": cognome_referente,
