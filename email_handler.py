@@ -36,35 +36,51 @@ class EmailHandler:
             return False
 
         msg = MIMEMultipart()
-        msg['From'] = f"PEA <{self.sender_email}>"
+        msg['From'] = f"Patient Engagement Award – Helaglobe"
         msg['To'] = recipient_email
-        msg['Subject'] = "Conferma Iscrizione PEA"
+        msg['Subject'] = "Conferma registrazione al Patient Engagament Award 2025"
 
         # Corpo email
         html_body = f"""
         <html>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-            <h2>Conferma Iscrizione PEA</h2>
-            
             <p>Gentile {form_data['nome_referente']} {form_data['cognome_referente']},</p>
             
-            <p>La ringraziamo per aver completato l'iscrizione al PEA.</p>
+            <p>la candidatura del progetto <strong>{form_data['titolo_progetto']}</strong> è stata registrata correttamente.</p>
+            
+            <p>Riepiloghiamo di seguito i dati da te inseriti:</p>
             
             <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                <h3>Riepilogo dei dati inseriti:</h3>
-                <ul>
+                <ul style="list-style-type: none; padding-left: 0;">
                     <li><strong>Candidato:</strong> {form_data['candidato']}</li>
+                    <li><strong>Ente:</strong> {form_data['ente']}</li>
                     <li><strong>Titolo Progetto:</strong> {form_data['titolo_progetto']}</li>
                     <li><strong>Area Terapeutica:</strong> {form_data['area_terapeutica']}</li>
-                    <li><strong>Referente:</strong> {form_data['nome_referente']} {form_data['cognome_referente']}</li>
+                    <li><strong>Nome Referente:</strong> {form_data['nome_referente']}</li>
+                    <li><strong>Cognome Referente:</strong> {form_data['cognome_referente']}</li>
                     <li><strong>Ruolo:</strong> {form_data['ruolo']}</li>
+                    <li><strong>Email:</strong> {form_data['mail']}</li>
+                    <li><strong>Telefono:</strong> {form_data['telefono']}</li>
+                    <li style="margin-top: 15px;"><strong>File ricevuti:</strong></li>
+                    <li style="margin-left: 20px; margin-top: 5px;">
+                        <span style="color: #4CAF50; font-size: 18px;">✓</span> Logo aziendale
+                    </li>
+                    <li style="margin-left: 20px;">
+                        <span style="color: #4CAF50; font-size: 18px;">✓</span> Immagine rappresentativa del progetto
+                    </li>
+                    <li style="margin-left: 20px;">
+                        <span style="color: #4CAF50; font-size: 18px;">✓</span> Presentazione del progetto
+                    </li>
                 </ul>
             </div>
             
-            <p>La contatteremo presto per ulteriori informazioni sul processo di valutazione.</p>
+            <p>Per eventuali necessità non esitare a contattarci scrivendo a <a href="mailto:pea@helaglobe.com">pea@helaglobe.com</a> o chiamando il numero 055.4939527.</p>
             
-            <p>Cordiali saluti,<br>
-            Team Helaglobe</p>
+            <p>Per aggiornamenti sul Patient Engagament Award segui la nostra pagina <a href="https://www.linkedin.com/company/helaglobe/">LinkedIn</a> e iscriviti alla newsletter di Helaglobe, visitando il nuovo sito <a href="https://helaglobe.com/">https://helaglobe.com/</a></p>
+            
+            <p>Grazie</p>
+            
+            <p>Il team Helaglobe</p>
             
             <hr>
             <p style="font-size: 12px; color: #666;">
