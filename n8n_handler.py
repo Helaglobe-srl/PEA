@@ -12,6 +12,12 @@ def clean_text(text):
         return text
     return text
 
+def get_drive_url(file_id):
+    """
+    Genera l'URL di Google Drive per il file
+    """
+    return f"https://drive.google.com/file/d/{file_id}/view"
+
 def send_data_to_n8n(form_data, file_ids, summary_data):
     """
     Invia i dati del form a n8n
@@ -28,14 +34,14 @@ def send_data_to_n8n(form_data, file_ids, summary_data):
         "RUOLO": form_data["ruolo"],
         "MAIL": form_data["mail"],
         "TELEFONO": form_data["telefono"],
-        "AREA TERAPEUTICA": form_data["area_terapeutica"],
+        "AREA_TERAPEUTICA": form_data["area_terapeutica"],
         "INFO_GIURIA": clean_text(summary_data["info_giuria"]),
         "SINTESI_EBOOK": clean_text(summary_data["sintesi_ebook"]),
         "OBIETTIVI": clean_text(summary_data["obiettivi"]),
         "RISULTATI": clean_text(summary_data["risultati"]),
-        "PPT_ID": file_ids["ppt"],
-        "MARCHIO_ID": file_ids["marchio"],
-        "PROJECT_IMAGE_ID": file_ids["image"]
+        "PPT_URL": get_drive_url(file_ids["ppt"])
+        #"MARCHIO_URL": get_drive_url(file_ids["marchio"]),
+        #"PROJECT_IMAGE_URL": get_drive_url(file_ids["image"])
     }
         
     try:
