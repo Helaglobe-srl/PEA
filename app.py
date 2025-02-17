@@ -66,25 +66,38 @@ if ente == "Altro":
         st.error("Per favore specifica la tipologia di Ente")
         ente = ""  # imposto a stringa vuota per far fallire la validazione dei campi obbligatori in fondo alla pagina
 
-area_terapeutica = st.selectbox(
+# Area Terapeutica multi-selezione
+area_terapeutica_selection = st.multiselect(
     "Area Terapeutica *",
     options=AREE_TERAPEUTICHE,
-    index=AREE_TERAPEUTICHE.index("Oncologia") if "Oncologia" in AREE_TERAPEUTICHE else 0,
-    help="Seleziona o cerca un'area terapeutica"
+    default=["Oncologia"] if "Oncologia" in AREE_TERAPEUTICHE else None,
+    help="Seleziona una o più aree terapeutiche"
 )
-# mostro campo di testo extra per area terapeutica personalizzata se selezionato "Altro"
-if area_terapeutica == "Altro":
+
+# salvo la selezione originale per il controllo di "Altro"
+has_altro = "Altro" in area_terapeutica_selection
+area_terapeutica = area_terapeutica_selection.copy()
+
+# mostra campo di testo extra per area terapeutica personalizzata se "Altro" è tra le selezioni
+if "Altro" in area_terapeutica:
     area_terapeutica_custom = st.text_input(
         "Specifica l'Area Terapeutica *",
         help="Inserisci l'area terapeutica non presente nella lista"
     )
-    # se l'utente ha inserito un'area terapeutica personalizzata, usa quella invece di "Altro"
+    # se l'utente seleziona un'area personalizzata (Altro), sostituisci "Altro" con quella
     if area_terapeutica_custom:
-        area_terapeutica = area_terapeutica_custom
+        area_terapeutica = [at for at in area_terapeutica if at != "Altro"] + [area_terapeutica_custom]
     else:
         st.error("Per favore specifica l'Area Terapeutica personalizzata")
-        area_terapeutica = ""  # imposto a stringa vuota per far fallire la validazione dei campi obbligatori in fondo alla pagina
-        
+        area_terapeutica = [at for at in area_terapeutica if at != "Altro"]  # rimuovo "Altro" se non è specificata l'area custom
+
+# converto la lista in stringa
+area_terapeutica_string = ", ".join(area_terapeutica) if area_terapeutica else ""
+
+# mostro errore se nessuna area terapeutica è selezionata (e "Altro" non è stato selezionato)
+if not area_terapeutica and not has_altro:
+    st.error("Per favore seleziona almeno un'Area Terapeutica")
+
 titolo_progetto = st.text_input("Titolo Progetto *")
 col1, col2 = st.columns(2)
 with col1:
@@ -217,7 +230,7 @@ if st.session_state["analysis_complete"]:
         "Ruolo": ruolo,
         "Mail": mail,
         "Telefono": telefono,
-        "Area Terapeutica": area_terapeutica
+        "Area Terapeutica": area_terapeutica_string
     }
     
     empty_fields = [field for field, value in required_fields.items() if not value.strip()]
@@ -286,7 +299,7 @@ if st.session_state["analysis_complete"]:
                         "ruolo": ruolo,
                         "mail": mail,
                         "telefono": telefono,
-                        "area_terapeutica": area_terapeutica
+                        "area_terapeutica": area_terapeutica_string
                     }
                     
                     summary_data = {
