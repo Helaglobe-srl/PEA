@@ -32,7 +32,7 @@ FOLDER_ID = st.secrets["drive_folder_id"]
 
 st.set_page_config(
     page_title="Iscrizione PEA 2025",
-    page_icon="🏆"
+    page_icon="images/LOGO_PEA_ICO.ico",
 )
 
 col1, col2, col3 = st.columns([1,1,1])
