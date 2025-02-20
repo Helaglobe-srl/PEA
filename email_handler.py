@@ -27,7 +27,7 @@ class EmailHandler:
             st.error(f"Errore nella configurazione SMTP: {str(e)}")
             return None
 
-    def send_confirmation_email(self, recipient_email, form_data):
+    def send_confirmation_email(self, recipient_email, form_data, file_ids):
         """
         Invia una email di conferma dopo la registrazione
         """
@@ -36,6 +36,11 @@ class EmailHandler:
             server = self.configure_smtp()
             if not server:
                 return "Errore di configurazione del server email"
+
+            # preparo i link ai file caricati in Google Drive
+            marchio_link = f"https://drive.google.com/file/d/{file_ids.get('marchio')}/view" if file_ids.get('marchio') else "#"
+            image_link = f"https://drive.google.com/file/d/{file_ids.get('image')}/view" if file_ids.get('image') else "#"
+            ppt_link = f"https://drive.google.com/file/d/{file_ids.get('ppt')}/view" if file_ids.get('ppt') else "#"
 
             msg = MIMEMultipart()
             msg['From'] = f"Patient Engagement Award – Helaglobe"
@@ -65,13 +70,13 @@ class EmailHandler:
                         <li><strong>Telefono:</strong> {form_data['telefono']}</li>
                         <li style="margin-top: 15px;"><strong>File ricevuti:</strong></li>
                         <li style="margin-left: 20px; margin-top: 5px;">
-                            <span style="color: #4CAF50; font-size: 18px;">✓</span> Logo aziendale
+                            <span style="color: #4CAF50; font-size: 18px;">✓</span> Logo aziendale [<a href="{marchio_link}" style="color: #0066cc;">Link</a>]
                         </li>
                         <li style="margin-left: 20px;">
-                            <span style="color: #4CAF50; font-size: 18px;">✓</span> Immagine rappresentativa del progetto
+                            <span style="color: #4CAF50; font-size: 18px;">✓</span> Immagine rappresentativa del progetto [<a href="{image_link}" style="color: #0066cc;">Link</a>]
                         </li>
                         <li style="margin-left: 20px;">
-                            <span style="color: #4CAF50; font-size: 18px;">✓</span> Presentazione del progetto
+                            <span style="color: #4CAF50; font-size: 18px;">✓</span> Presentazione del progetto [<a href="{ppt_link}" style="color: #0066cc;">Link</a>]
                         </li>
                     </ul>
                 </div>
@@ -112,9 +117,9 @@ class EmailHandler:
                 server.quit()
 
 
-def send_confirmation_email(recipient_email, form_data):
+def send_confirmation_email(recipient_email, form_data, file_ids=None):
     """
-    Funzione wrapper per mantenere la compatibilità con il codice esistente
+    Funzione wrapper per inviare l'email di conferma
     """
     handler = EmailHandler()
-    return handler.send_confirmation_email(recipient_email, form_data) 
+    return handler.send_confirmation_email(recipient_email, form_data, file_ids) 

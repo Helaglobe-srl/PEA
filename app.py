@@ -335,9 +335,13 @@ if st.session_state["analysis_complete"]:
                     }
                     
                     if send_data_to_n8n(form_data, st.session_state["file_upload_ids"], summary_data):
-                                                
+                        
                         # invio email di conferma
-                        email_result = send_confirmation_email(form_data["mail"], form_data)
+                        email_result = send_confirmation_email(
+                            form_data["mail"], 
+                            form_data, 
+                            st.session_state["file_upload_ids"]  # Passo gli ID dei file caricati
+                        )
                         if email_result is True:
                             st.balloons()
                             # resetta tutte le variabili di sessione
