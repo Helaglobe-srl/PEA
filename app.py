@@ -194,12 +194,8 @@ if st.session_state["analysis_complete"]:
         height=100
     )
     
-    info_giuria = st.text_area(
-        "Informazioni necessarie alla giuria:",
-        value=st.session_state["extracted_content"]["info_giuria"],
-        height=400,
-        help="Questa sezione deve contenere una descrizione dettagliata del progetto che verrà sottoposta alla giuria, includendo obiettivi e risultati."
-    )
+    # Salvo info_giuria per salvarla nel google sheet ma non viene mostrata nella pagina
+    info_giuria = st.session_state["extracted_content"]["info_giuria"]
     
     sintesi_ebook = st.text_area(
         "Sintesi informazioni per l'Ebook (max 5 frasi):",
