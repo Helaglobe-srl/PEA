@@ -1,3 +1,4 @@
+import datetime
 import streamlit as st
 import requests
 
@@ -41,6 +42,8 @@ def send_data_to_n8n(form_data, file_ids, summary_data):
         "RISULTATI": clean_text(summary_data["risultati"]),
         "PPT_URL": get_drive_url(file_ids["ppt"]),
         #"MARCHIO_URL": get_drive_url(file_ids["marchio"]),
+        #"PROJECT_IMAGE_URL": get_drive_url(file_ids["image"]),
+        "DATA_SOTTOMISSIONE": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "CONSENSO_PRIVACY": 1 if form_data["privacy_consent"] else 0,
         "CONSENSO_GIURIA": 1 if form_data["jury_consent"] else 0,
         "CONSENSO_MARKETING": 1 if form_data["marketing_consent"] else 0
