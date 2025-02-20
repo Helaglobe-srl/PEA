@@ -35,9 +35,9 @@ st.set_page_config(
     page_icon="🏆"
 )
 
-col1, col2, col3 = st.columns([1,2,1])
+col1, col2, col3 = st.columns([1,1,1])
 with col2:
-    st.image("images/logo_pea.jpg", width=200)
+    st.image("images/logo_pea.jpg", width=200, use_container_width=True)
 
 
 st.markdown("""
