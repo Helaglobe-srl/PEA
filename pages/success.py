@@ -21,7 +21,7 @@ st.info("""
 """)
 
 # bottone Torna alla Home
-if st.button("Torna alla Home"):
+if st.button("Candida un altro progetto"):
     # resetta tutte le variabili di sessione
     for key in st.session_state.keys():
         del st.session_state[key]

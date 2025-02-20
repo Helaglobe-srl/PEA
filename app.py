@@ -46,11 +46,14 @@ st.markdown("""
     <h3 style='text-align: center; color: #666666; margin-top: 0; margin-bottom: 40px;'>3rd Edition</h3>
     """, unsafe_allow_html=True)
 
+st.markdown("<span style='color: red; font-size: 0.8em'>* Campi obbligatori</span>", unsafe_allow_html=True)
+
 # campi obbligatori
 candidato = st.text_input("Candidato *")
 ente = st.selectbox(
     "Ente *",
     options=ENTI,
+    index=ENTI.index("Azienda Farmaceutica"), 
     help="Seleziona la tipologia di ente"
 )
 # mostro campo di testo extra per ente personalizzato se selezionato "Altro"
@@ -70,7 +73,8 @@ if ente == "Altro":
 area_terapeutica_selection = st.multiselect(
     "Area Terapeutica *",
     options=AREE_TERAPEUTICHE,
-    default=["Oncologia"] if "Oncologia" in AREE_TERAPEUTICHE else None,
+    #default=["Oncologia"] if "Oncologia" in AREE_TERAPEUTICHE else None,
+    placeholder="Seleziona una o più aree terapeutiche",
     help="Seleziona una o più aree terapeutiche"
 )
 
@@ -142,8 +146,6 @@ ppt_file = st.file_uploader(
     key=key
 )
 
-st.markdown("<span style='color: red; font-size: 0.8em'>* Campi obbligatori</span>", unsafe_allow_html=True)
-
 # controllo che tutti i file siano stati caricati
 if not all([marchio_file, image_file, ppt_file]):
     st.warning("Carica tutti i file richiesti prima di procedere.")
@@ -200,10 +202,10 @@ if st.session_state["analysis_complete"]:
     )
     
     sintesi_ebook = st.text_area(
-        "Sintesi informazioni per l'Ebook (max 300 parole):",
+        "Sintesi informazioni per l'Ebook (max 5 frasi):",
         value=st.session_state["extracted_content"]["sintesi_ebook"],
         height=200,
-        help="Questa sintesi verrà utilizzata per l'Ebook. Massimo 300 parole."
+        help="Questa sintesi verrà utilizzata per l'Ebook. Max 5 frasi."
     )
     
     obiettivi = st.text_area(
