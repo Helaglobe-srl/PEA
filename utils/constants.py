@@ -24,12 +24,14 @@ AREE_TERAPEUTICHE = [
     "Altro"
 ]
 
-# Lista degli enti
-ENTI = [
+# Lista delle tipologie
+TIPOLOGIE = [
     "Azienda Farmaceutica",
-    "Azienda di dispositivi medici",
-    "Azienda Privata",
-    "Azienda Pubblica",
-    "Ente del Terzo Settore",
+    "Azienda di Medical Device",
+    "Azienda di Digital Health",
+    "Azienda di Telemedicina",
+    "Associazione Pazienti",
+    "Società Scientifica",
+    "Fondazione",
     "Altro"
 ] 

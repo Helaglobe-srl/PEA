@@ -28,7 +28,7 @@ def send_data_to_n8n(form_data, file_ids, summary_data):
     payload = {
         "CATEGORIA": summary_data["categoria"].upper(),
         "CANDIDATO": form_data["candidato"],
-        "ENTE": form_data["ente"],
+        "TIPOLOGIA": form_data["tipologia"],
         "TITOLO_PROGETTO": form_data["titolo_progetto"],
         "NOME_REFERENTE": form_data["nome_referente"],
         "COGNOME_REFERENTE": form_data["cognome_referente"],

@@ -60,7 +60,7 @@ class EmailHandler:
                 <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
                     <ul style="list-style-type: none; padding-left: 0;">
                         <li><strong>Candidato:</strong> {form_data['candidato']}</li>
-                        <li><strong>Ente:</strong> {form_data['ente']}</li>
+                        <li><strong>Tipologia:</strong> {form_data['tipologia']}</li>
                         <li><strong>Titolo Progetto:</strong> {form_data['titolo_progetto']}</li>
                         <li><strong>Area Terapeutica:</strong> {form_data['area_terapeutica']}</li>
                         <li><strong>Nome Referente:</strong> {form_data['nome_referente']}</li>

@@ -7,7 +7,7 @@ import tempfile
 import time
 from email_handler import send_confirmation_email
 from utils.validators import validate_phone_number, validate_email
-from utils.constants import AREE_TERAPEUTICHE, ENTI
+from utils.constants import AREE_TERAPEUTICHE, TIPOLOGIE
 
 if "file_upload_ids" not in st.session_state:
     st.session_state["file_upload_ids"] = None
@@ -50,24 +50,24 @@ st.markdown("<span style='color: red; font-size: 0.8em'>* Campi obbligatori</spa
 
 # campi obbligatori
 candidato = st.text_input("Candidato *")
-ente = st.selectbox(
-    "Ente *",
-    options=ENTI,
-    index=ENTI.index("Azienda Farmaceutica"), 
-    help="Seleziona la tipologia di ente"
+tipologia = st.selectbox(
+    "Tipologia *",
+    options=TIPOLOGIE,
+    index=TIPOLOGIE.index("Azienda Farmaceutica"), 
+    help="Seleziona la tipologia"
 )
-# mostro campo di testo extra per ente personalizzato se selezionato "Altro"
-if ente == "Altro":
-    ente_custom = st.text_input(
-        "Specifica l'Ente *",
-        help="Inserisci la tipologia di ente non presente nella lista"
+# mostro campo di testo extra per tipologia personalizzato se selezionato "Altro"
+if tipologia == "Altro":
+    tipologia_custom = st.text_input(
+        "Specifica la Tipologia *",
+        help="Inserisci la tipologia non presente nella lista"
     )
-    # se l'utente ha inserito un ente personalizzato, usa quello invece di "Altro"
-    if ente_custom:
-        ente = ente_custom
+    # se l'utente ha inserito una tipologia personalizzata, usa quella invece di "Altro"
+    if tipologia_custom:
+        tipologia = tipologia_custom
     else:
-        st.error("Per favore specifica la tipologia di Ente")
-        ente = ""  # imposto a stringa vuota per far fallire la validazione dei campi obbligatori in fondo alla pagina
+        st.error("Per favore specifica la Tipologia")
+        tipologia = ""  # imposto a stringa vuota per far fallire la validazione dei campi obbligatori in fondo alla pagina
 
 # Area Terapeutica multi-selezione
 area_terapeutica_selection = st.multiselect(
@@ -238,7 +238,7 @@ if st.session_state["analysis_complete"]:
     # controlla se tutti i campi obbligatori sono compilati
     required_fields = {
         "Candidato": candidato,
-        "Ente": ente,
+        "Tipologia": tipologia,
         "Titolo Progetto": titolo_progetto,
         "Nome Referente": nome_referente,
         "Cognome Referente": cognome_referente,
@@ -309,7 +309,7 @@ if st.session_state["analysis_complete"]:
                     # 4. infine si invia i dati a n8n che li salva come nuovo record nel google sheet iscrizioni
                     form_data = {
                         "candidato": candidato,
-                        "ente": ente,
+                        "tipologia": tipologia,
                         "titolo_progetto": titolo_progetto,
                         "nome_referente": nome_referente,
                         "cognome_referente": cognome_referente,
