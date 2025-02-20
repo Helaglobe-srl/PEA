@@ -2,7 +2,9 @@ import streamlit as st
 
 st.set_page_config(page_title="Iscrizione Completata", page_icon="✅")
 
-st.image("images/logo_pea.jpg", width=200)
+col1, col2, col3 = st.columns([1,1,1])
+with col2:
+    st.image("images/LOGO_PEA.webp", use_container_width=True)
 st.title("✅ Iscrizione completata con successo!")
 
 # messaggio di conferma dell'iscrizione
@@ -21,8 +23,10 @@ st.info("""
 """)
 
 # bottone Torna alla Home
-if st.button("Candida un altro progetto"):
-    # resetta tutte le variabili di sessione
-    for key in st.session_state.keys():
-        del st.session_state[key]
-    st.switch_page("app.py") 
+col1, col2, col3 = st.columns([1,1,1])
+with col2:
+    if st.button("Candida un altro progetto"):
+        # resetta tutte le variabili di sessione
+        for key in st.session_state.keys():
+            del st.session_state[key]
+        st.switch_page("app.py") 
