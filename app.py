@@ -222,6 +222,23 @@ if st.session_state["analysis_complete"]:
         help="Lista dei risultati principali raggiunti"
     )
     
+    # Checkbox per i consensi
+    st.subheader("Privacy e Consensi")
+    
+    privacy_consent = st.checkbox(
+        "Acconsento al " + 
+        "[trattamento dei dati personali](https://www.helaglobe.com/privacy-policy)" +
+        " ai sensi degli articoli 13-14 del GDPR 2016/679 *"
+    )
+    
+    jury_consent = st.checkbox(
+        "Autorizzo HELAGLOBE S.R.L. a condividere con la giuria la documentazione presentata *"
+    )
+    
+    marketing_consent = st.checkbox(
+        "Acconsento a ricevere novità e informazioni sui progetti di Helaglobe"
+    )
+    
     # controlla se tutti i campi obbligatori sono compilati
     required_fields = {
         "Candidato": candidato,
@@ -242,6 +259,8 @@ if st.session_state["analysis_complete"]:
         st.error("Per favore correggi l'indirizzo email prima di procedere")
     elif not validate_phone_number(telefono):
         st.error("Per favore correggi il numero di telefono prima di procedere")
+    elif not privacy_consent or not jury_consent:
+        st.error("Per favore accetta i consensi obbligatori per procedere (Privacy e Autorizzazione giuria)")
     else:
         if st.button("Sottometti Iscrizione"):
             with st.spinner("Iscrizione in corso..."):
@@ -301,7 +320,10 @@ if st.session_state["analysis_complete"]:
                         "ruolo": ruolo,
                         "mail": mail,
                         "telefono": telefono,
-                        "area_terapeutica": area_terapeutica_string
+                        "area_terapeutica": area_terapeutica_string,
+                        "privacy_consent": privacy_consent,
+                        "jury_consent": jury_consent,
+                        "marketing_consent": marketing_consent
                     }
                     
                     summary_data = {
