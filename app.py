@@ -118,9 +118,9 @@ ruolo = st.text_input("Ruolo *")
 # mail e conferma mail
 col1, col2 = st.columns(2)
 with col1:
-    mail = st.text_input("Mail *")
+    mail = st.text_input("Mail *").lower()
 with col2:
-    mail_confirm = st.text_input("Conferma Mail *")
+    mail_confirm = st.text_input("Conferma Mail *").lower()
 
 # validazione mail e conferma mail
 if mail and mail_confirm:
