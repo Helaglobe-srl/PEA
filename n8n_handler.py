@@ -29,7 +29,7 @@ class N8NHandler:
         """
         payload = {
             "CATEGORIA": summary_data["categoria"].upper(),
-            "CANDIDATO": form_data["candidato"],
+            "RAGIONE_SOCIALE": form_data["ragione_sociale"],
             "TIPOLOGIA": form_data["tipologia"],
             "TITOLO_PROGETTO": form_data["titolo_progetto"],
             "NOME_REFERENTE": form_data["nome_referente"],

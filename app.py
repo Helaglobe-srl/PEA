@@ -54,7 +54,7 @@ st.markdown("""
 st.markdown("<span style='color: red; font-size: 0.8em'>* Campi obbligatori</span>", unsafe_allow_html=True)
 
 # campi obbligatori
-candidato = st.text_input("Candidato *")
+ragione_sociale = st.text_input("Ragione Sociale *")
 tipologia = st.selectbox(
     "Tipologia *",
     options=TIPOLOGIE,
@@ -243,7 +243,7 @@ if st.session_state["analysis_complete"]:
     
     # controlla se tutti i campi obbligatori sono compilati
     required_fields = {
-        "Candidato": candidato,
+        "Ragione Sociale": ragione_sociale,
         "Tipologia": tipologia,
         "Titolo Progetto": titolo_progetto,
         "Nome Referente": nome_referente,
@@ -271,7 +271,7 @@ if st.session_state["analysis_complete"]:
                     if not st.session_state["files_uploaded_to_drive"]:
                         current_date = time.strftime("%Y%m%d")
                         clean_name = lambda s: s.lower().replace(" ", "_")
-                        base_filename = f"{current_date}_{clean_name(candidato)}_{clean_name(titolo_progetto)}"
+                        base_filename = f"{current_date}_{clean_name(ragione_sociale)}_{clean_name(titolo_progetto)}"
                         
                         try:
                             file_uploads = [
@@ -313,7 +313,7 @@ if st.session_state["analysis_complete"]:
 
                     # 4. infine si invia i dati a n8n che li salva come nuovo record nel google sheet iscrizioni
                     form_data = {
-                        "candidato": candidato,
+                        "ragione_sociale": ragione_sociale,
                         "tipologia": tipologia,
                         "titolo_progetto": titolo_progetto,
                         "nome_referente": nome_referente,
