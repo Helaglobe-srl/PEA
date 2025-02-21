@@ -135,6 +135,16 @@ telefono = st.text_input("Telefono *")
 if telefono and not validate_phone_number(telefono):
     st.error("Per favore inserisci un numero di telefono valido (esempio: 3401234567 o +39 340 1234567)")
 
+# GIF robot 
+with open("images/hela.gif", "rb") as f:
+    data = f.read()
+    encoded = base64.b64encode(data).decode()
+st.markdown(f"""
+<div style="display: flex; justify-content: center;">
+    <img src="data:image/gif;base64,{encoded}" style="width: 400px; height: auto; margin: 20px 0;">
+</div>
+""", unsafe_allow_html=True)
+
 # sezione di caricamento files
 st.subheader("Caricamento File")
 
