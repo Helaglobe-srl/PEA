@@ -115,11 +115,3 @@ class EmailHandler:
         finally:
             if server:
                 server.quit()
-
-
-def send_confirmation_email(recipient_email, form_data, file_ids=None):
-    """
-    Funzione wrapper per inviare l'email di conferma
-    """
-    handler = EmailHandler()
-    return handler.send_confirmation_email(recipient_email, form_data, file_ids) 

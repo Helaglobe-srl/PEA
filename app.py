@@ -1,13 +1,21 @@
+import base64
 import os 
 import streamlit as st
-from upload_handler import authenticate_drive, upload_to_drive
-from ppt_analyzer import analyze_ppt
-from n8n_handler import send_data_to_n8n
 import tempfile
 import time
-from email_handler import send_confirmation_email
 from utils.validators import validate_phone_number, validate_email
 from utils.constants import AREE_TERAPEUTICHE, TIPOLOGIE
+from google_drive_upload_handler import GoogleDriveUploadHandler
+from email_handler import EmailHandler
+from n8n_handler import N8NHandler
+from ppt_analyzer import PPTAnalyzer
+
+FOLDER_ID = st.secrets["drive_folder_id"]
+
+drive_handler = GoogleDriveUploadHandler()
+email_handler = EmailHandler()
+n8n_handler = N8NHandler()
+ppt_analyzer = PPTAnalyzer()
 
 if "file_upload_ids" not in st.session_state:
     st.session_state["file_upload_ids"] = None
@@ -28,8 +36,6 @@ if "marchio_content" not in st.session_state:
 if "marchio_type" not in st.session_state:
     st.session_state["marchio_type"] = None
 
-FOLDER_ID = st.secrets["drive_folder_id"]
-
 st.set_page_config(
     page_title="Iscrizione PEA 2025",
     page_icon="images/LOGO_PEA_ICO.ico",
@@ -38,7 +44,6 @@ st.set_page_config(
 col1, col2, col3 = st.columns([1,1,1])
 with col2:
     st.image("images/LOGO_PEA.webp", width=200, use_container_width=True)
-
 
 st.markdown("""
     <h1 style='text-align: center; margin-bottom: 0;'>Form di Iscrizione</h1>
@@ -158,6 +163,7 @@ if image_file:
     st.session_state["image_content"] = image_file.getvalue()
     st.session_state["image_type"] = image_file.name.split('.')[-1]
 
+
 # 1. analisi della presentazione
 if st.button("Carica Files", disabled=not all([marchio_file, image_file, ppt_file])):
     with st.spinner("Analisi della presentazione in corso..."):
@@ -166,7 +172,7 @@ if st.button("Carica Files", disabled=not all([marchio_file, image_file, ppt_fil
                 temp_file.write(ppt_file.getbuffer())
                 temp_file_path = temp_file.name
 
-            summary_data = analyze_ppt(temp_file_path)
+            summary_data = ppt_analyzer.analyze(temp_file_path)
             os.unlink(temp_file_path)
             
             st.session_state["extracted_content"] = summary_data
@@ -194,7 +200,7 @@ if st.session_state["analysis_complete"]:
         height=100
     )
     
-    # Salvo info_giuria per salvarla nel google sheet ma non viene mostrata nella pagina
+    # salvo info_giuria per salvarla nel google sheet ma non viene mostrata nella pagina
     info_giuria = st.session_state["extracted_content"]["info_giuria"]
     
     sintesi_ebook = st.text_area(
@@ -268,7 +274,6 @@ if st.session_state["analysis_complete"]:
                         base_filename = f"{current_date}_{clean_name(candidato)}_{clean_name(titolo_progetto)}"
                         
                         try:
-                            service = authenticate_drive()
                             file_uploads = [
                                 ("ppt", "_presentazione", st.session_state["ppt_file_content"]),
                                 ("marchio", "_marchio", st.session_state["marchio_content"]),
@@ -294,7 +299,7 @@ if st.session_state["analysis_complete"]:
                                     filename = f"{base_filename}{suffix}.{st.session_state['image_type']}"
                                 
                                 try:
-                                    file_ids[file_key] = upload_to_drive(service, filename, temp_path, FOLDER_ID)
+                                    file_ids[file_key] = drive_handler.upload_file(filename, temp_path, FOLDER_ID)
                                     os.unlink(temp_path)
                                 except Exception as e:
                                     st.error(f"Error uploading {file_key}: {str(e)}")
@@ -330,13 +335,14 @@ if st.session_state["analysis_complete"]:
                         "risultati": risultati
                     }
                     
-                    if send_data_to_n8n(form_data, st.session_state["file_upload_ids"], summary_data):
+                    # invio dati a n8n
+                    if n8n_handler.send_data(form_data, st.session_state["file_upload_ids"], summary_data):
                         
                         # invio email di conferma
-                        email_result = send_confirmation_email(
+                        email_result = email_handler.send_confirmation_email(
                             form_data["mail"], 
                             form_data, 
-                            st.session_state["file_upload_ids"]  # Passo gli ID dei file caricati
+                            st.session_state["file_upload_ids"]
                         )
                         if email_result is True:
                             st.balloons()
