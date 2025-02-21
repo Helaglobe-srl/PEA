@@ -4,7 +4,7 @@ import streamlit as st
 import tempfile
 import time
 from utils.validators import validate_phone_number, validate_email
-from utils.constants import AREE_TERAPEUTICHE, TIPOLOGIE
+from utils.constants import AREE_TERAPEUTICHE, TIPOLOGIE, CATEGORIE
 from google_drive_upload_handler import GoogleDriveUploadHandler
 from email_handler import EmailHandler
 from n8n_handler import N8NHandler
@@ -206,10 +206,19 @@ if st.session_state["analysis_complete"]:
         Una volta verificato che i dati siano corretti, premi il pulsante 'Sottometti Iscrizione' per completare la procedura.
     """)
     
-    categoria = st.text_area(
+    # categoria
+    suggested_category = st.session_state["extracted_content"]["categoria"]
+    default_index = 0
+    for i, cat in enumerate(CATEGORIE):
+        if cat.upper() == suggested_category.upper():
+            default_index = i
+            break
+            
+    categoria = st.selectbox(
         "Categoria:",
-        value=st.session_state["extracted_content"]["categoria"],
-        height=100
+        options=CATEGORIE,
+        index=default_index,
+        help="Seleziona la categoria del progetto"
     )
     
     # salvo info_giuria per salvarla nel google sheet ma non viene mostrata nella pagina

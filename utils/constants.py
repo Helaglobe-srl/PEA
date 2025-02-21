@@ -34,4 +34,13 @@ TIPOLOGIE = [
     "Società Scientifica",
     "Fondazione",
     "Altro"
+]
+
+# Lista delle categorie
+CATEGORIE = [
+    "ACCESSO E POLICY MAKING",
+    "AWARENESS",
+    "EMPOWERMENT",
+    "PATIENT EXPERIENCE",
+    "PATIENT SUPPORT PROGRAM"
 ] 
