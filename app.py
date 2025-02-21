@@ -202,8 +202,11 @@ if st.session_state["analysis_complete"]:
     st.subheader("Dati estratti dalla presentazione")
     
     st.info("""
-        I campi seguenti sono stati estratti automaticamente dalla presentazione, puoi modificarli se necessario. 
-        Una volta verificato che i dati siano corretti, premi il pulsante 'Sottometti Iscrizione' per completare la procedura.
+        Abbiamo analizzato i contenuti che hai condiviso con noi e, sulla base degli obiettivi e dei risultati che ci hai indicato, crediamo che il tuo progetto possa essere descritto come leggerai qui di seguito.
+        
+        Ogni campo riprende i contenuti riportati nella presentazione, ma puoi modificare se necessario e, una volta che avrai verificato che tutto sia corretto, premi il pulsante 'Sottometti Iscrizione' per completare la procedura.
+        
+        Grazie! 
     """)
     
     # categoria
