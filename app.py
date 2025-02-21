@@ -114,12 +114,24 @@ with col1:
 with col2:
     cognome_referente = st.text_input("Cognome Referente *")
 ruolo = st.text_input("Ruolo *")
-mail = st.text_input("Mail *")
+
+# mail e conferma mail
+col1, col2 = st.columns(2)
+with col1:
+    mail = st.text_input("Mail *")
+with col2:
+    mail_confirm = st.text_input("Conferma Mail *")
+
+# validazione mail e conferma mail
+if mail and mail_confirm:
+    if mail != mail_confirm:
+        st.error("Gli indirizzi email non corrispondono")
+    elif not validate_email(mail):
+        st.error("Per favore inserisci un indirizzo email valido (esempio: nome@dominio.com)")
+
 telefono = st.text_input("Telefono *")
 
 # messaggi di validazione telefono e email
-if mail and not validate_email(mail):
-    st.error("Per favore inserisci un indirizzo email valido (esempio: nome@dominio.com)")
 if telefono and not validate_phone_number(telefono):
     st.error("Per favore inserisci un numero di telefono valido (esempio: 3401234567 o +39 340 1234567)")
 
@@ -259,6 +271,8 @@ if st.session_state["analysis_complete"]:
         st.error(f"Per favore compila i seguenti campi obbligatori: {', '.join(empty_fields)}")
     elif not validate_email(mail):
         st.error("Per favore correggi l'indirizzo email prima di procedere")
+    elif mail != mail_confirm:
+        st.error("Gli indirizzi email non corrispondono")
     elif not validate_phone_number(telefono):
         st.error("Per favore correggi il numero di telefono prima di procedere")
     elif not privacy_consent or not jury_consent:
