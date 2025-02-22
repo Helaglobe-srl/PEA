@@ -33,22 +33,31 @@ class PPTAnalyzer:
         
         3. SINTESI INFORMAZIONI PER L'EBOOK: [riassumi le informazioni principali del progetto in massimo 8 frasi, raccontando obiettivi e risultati brevemente]
         
-        4. OBIETTIVI: [elenca in forma di bullet points (usando il carattere -) i principali obiettivi del progetto in modo conciso]
+        4. OBIETTIVI: [elenca tutti i principali obiettivi del progetto in modo conciso. Metti ogni obiettivo su una nuova riga, iniziando con - e andando a capo dopo ogni obiettivo]
         
-        5. RISULTATI: [elenca in forma di bullet points (usando il carattere -) i principali risultati raggiunti in modo conciso]
+        5. RISULTATI: [elenca tutti i principali risultati raggiunti in modo conciso. Metti ogni risultato su una nuova riga, iniziando con - e andando a capo dopo ogni risultato]
 
         Usa esattamente questi delimitatori nella tua risposta:
         <CATEGORIA>categoria</CATEGORIA>
         <INFO_GIURIA>informazioni complete</INFO_GIURIA>
         <SINTESI_EBOOK>sintesi breve</SINTESI_EBOOK>
-        <OBIETTIVI>lista obiettivi</OBIETTIVI>
-        <RISULTATI>lista risultati</RISULTATI>
+        <OBIETTIVI>
+        - primo obiettivo
+        - secondo obiettivo
+        (e così via per tutti gli obiettivi trovati)
+        </OBIETTIVI>
+        <RISULTATI>
+        - primo risultato
+        - secondo risultato
+        (e così via per tutti i risultati trovati)
+        </RISULTATI>
 
         IMPORTANTE: 
         - Non usare MAI virgolette doppie (") nel testo
         - Se devi citare qualcosa, usa solo virgolette singole (')
         - Non usare MAI il carattere backslash (\)
         - Non usare MAI <br> per andare a capo
+        - Usa un vero ritorno a capo dopo ogni elemento con -
         
         Contenuto della presentazione:
         """ + text_content
