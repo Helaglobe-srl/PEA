@@ -31,7 +31,7 @@ class PPTAnalyzer:
         
         2. INFORMAZIONI NECESSARIE ALLA GIURIA: [fornisci una descrizione molto dettagliata del progetto, includendo obiettivi e risultati.]
         
-        3. SINTESI INFORMAZIONI PER L'EBOOK: [riassumi le informazioni principali del progetto in massimo 300 parole, mantenendo gli elementi chiave]
+        3. SINTESI INFORMAZIONI PER L'EBOOK: [riassumi le informazioni principali del progetto in massimo 8 frasi, raccontando obiettivi e risultati brevemente]
         
         4. OBIETTIVI: [elenca in forma di bullet points (usando il carattere -) i principali obiettivi del progetto in modo conciso]
         
@@ -48,17 +48,18 @@ class PPTAnalyzer:
         - Non usare MAI virgolette doppie (") nel testo
         - Se devi citare qualcosa, usa solo virgolette singole (')
         - Non usare MAI il carattere backslash (\)
+        - Non usare MAI <br> per andare a capo
         
         Contenuto della presentazione:
         """ + text_content
         
         response = self.client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "Sei un assistente esperto nell'analisi di presentazioni PowerPoint. Fornisci riassunti strutturati e completi."},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=2000,
+            max_tokens=4096,
             temperature=0.7
         )
         
