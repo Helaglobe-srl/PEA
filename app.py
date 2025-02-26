@@ -74,9 +74,12 @@ if tipologia == "Altro":
         st.error("Per favore specifica la Tipologia")
         tipologia = ""  # imposto a stringa vuota per far fallire la validazione dei campi obbligatori in fondo alla pagina
 
+# titolo progetto
+titolo_progetto = st.text_input("Titolo Progetto *")
+
 # Area Terapeutica multi-selezione
 area_terapeutica_selection = st.multiselect(
-    "Area Terapeutica *",
+    "Area Terapeutica Progetto *",
     options=AREE_TERAPEUTICHE,
     #default=["Oncologia"] if "Oncologia" in AREE_TERAPEUTICHE else None,
     placeholder="Seleziona una o più aree terapeutiche",
@@ -107,7 +110,7 @@ area_terapeutica_string = ", ".join(area_terapeutica) if area_terapeutica else "
 if not area_terapeutica and not has_altro:
     st.error("Per favore seleziona almeno un'Area Terapeutica")
 
-titolo_progetto = st.text_input("Titolo Progetto *")
+# nome e cognome referente
 col1, col2 = st.columns(2)
 with col1:
     nome_referente = st.text_input("Nome Referente *")
