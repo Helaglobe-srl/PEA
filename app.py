@@ -308,9 +308,8 @@ if st.session_state["analysis_complete"]:
                 try:
                     # 3. prima di inviare i dati a n8n, si carica la presentazione su GDrive
                     if not st.session_state["files_uploaded_to_drive"]:
-                        current_date = time.strftime("%Y%m%d")
                         clean_name = lambda s: s.lower().replace(" ", "_")
-                        base_filename = f"{current_date}_{clean_name(ragione_sociale)}_{clean_name(titolo_progetto)}"
+                        base_filename = f"{clean_name(ragione_sociale)}_{clean_name(titolo_progetto)}"
                         
                         try:
                             file_uploads = [
