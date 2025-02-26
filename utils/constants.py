@@ -31,8 +31,10 @@ TIPOLOGIE = [
     "Azienda di Digital Health",
     "Azienda di Telemedicina",
     "Associazione Pazienti",
-    "Società Scientifica",
+    "Ente Pubblico",
     "Fondazione",
+    "Ospedale",
+    "Società Scientifica",
     "Altro"
 ]
 
