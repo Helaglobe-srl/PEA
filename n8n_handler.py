@@ -42,7 +42,7 @@ class N8NHandler:
             "SINTESI_EBOOK": self.clean_text(summary_data["sintesi_ebook"]),
             "OBIETTIVI": self.clean_text(summary_data["obiettivi"]),
             "RISULTATI": self.clean_text(summary_data["risultati"]),
-            "PPT_URL": self.get_drive_url(file_ids["ppt"]),
+            "PPT_URL": self.get_drive_url(file_ids["presentation"]),
             "DATA_SOTTOMISSIONE": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "CONSENSO_PRIVACY": 1 if form_data["privacy_consent"] else 0,
             "CONSENSO_GIURIA": 1 if form_data["jury_consent"] else 0,
