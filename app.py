@@ -8,14 +8,14 @@ from utils.constants import AREE_TERAPEUTICHE, TIPOLOGIE, CATEGORIE
 from google_drive_upload_handler import GoogleDriveUploadHandler
 from email_handler import EmailHandler
 from n8n_handler import N8NHandler
-from ppt_analyzer import PPTAnalyzer
+from presentation_analyzer import PresentationAnalyzer
 
 FOLDER_ID = st.secrets["drive_folder_id"]
 
 drive_handler = GoogleDriveUploadHandler()
 email_handler = EmailHandler()
 n8n_handler = N8NHandler()
-ppt_analyzer = PPTAnalyzer()
+presentation_analyzer = PresentationAnalyzer()
 
 if "file_upload_ids" not in st.session_state:
     st.session_state["file_upload_ids"] = None
@@ -29,8 +29,8 @@ if "reset_uploader" not in st.session_state:
     st.session_state["reset_uploader"] = False
 if "files_uploaded_to_drive" not in st.session_state:
     st.session_state["files_uploaded_to_drive"] = False
-if "ppt_file_content" not in st.session_state:
-    st.session_state["ppt_file_content"] = None
+if "presentation_content" not in st.session_state:
+    st.session_state["presentation_content"] = None
 if "marchio_content" not in st.session_state:
     st.session_state["marchio_content"] = None
 if "marchio_type" not in st.session_state:
@@ -167,17 +167,17 @@ image_file = st.file_uploader(
     key="image_uploader"
 )
 
-# - PPT 
+# - Presentazione
 key = "file_uploader_" + str(int(time.time())) if st.session_state["reset_uploader"] else "file_uploader"
-ppt_file = st.file_uploader(
+presentation_file = st.file_uploader(
     "Presentazione del progetto *", 
-    type=["ppt", "pptx"],
-    help="Carica un file PowerPoint",
+    type=["ppt", "pptx", "pdf"],
+    help="Carica un file PowerPoint o PDF",
     key=key
 )
 
 # controllo che tutti i file siano stati caricati
-if not all([marchio_file, image_file, ppt_file]):
+if not all([marchio_file, image_file, presentation_file]):
     st.warning("Carica tutti i file richiesti prima di procedere.")
 
 # salva i file caricati in sessione
@@ -190,19 +190,19 @@ if image_file:
 
 
 # 1. analisi della presentazione
-if st.button("Carica Files", disabled=not all([marchio_file, image_file, ppt_file])):
+if st.button("Carica Files", disabled=not all([marchio_file, image_file, presentation_file])):
     with st.spinner("Analisi della presentazione in corso..."):
         try:
-            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{ppt_file.name.split('.')[-1]}") as temp_file:
-                temp_file.write(ppt_file.getbuffer())
+            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{presentation_file.name.split('.')[-1]}") as temp_file:
+                temp_file.write(presentation_file.getbuffer())
                 temp_file_path = temp_file.name
 
-            summary_data = ppt_analyzer.analyze(temp_file_path)
+            summary_data = presentation_analyzer.analyze(temp_file_path)
             os.unlink(temp_file_path)
             
             st.session_state["extracted_content"] = summary_data
             st.session_state["analysis_complete"] = True
-            st.session_state["ppt_file_content"] = ppt_file.getvalue()
+            st.session_state["presentation_content"] = presentation_file.getvalue()
             
             st.success("✅ Presentazione analizzata con successo!")
             st.rerun()
@@ -313,7 +313,7 @@ if st.session_state["analysis_complete"]:
                         
                         try:
                             file_uploads = [
-                                ("ppt", "_presentazione", st.session_state["ppt_file_content"]),
+                                ("presentation", "_presentazione", st.session_state["presentation_content"]),
                                 ("marchio", "_marchio", st.session_state["marchio_content"]),
                                 ("image", "_immagine", st.session_state["image_content"])
                             ]
@@ -328,9 +328,10 @@ if st.session_state["analysis_complete"]:
                                     temp_file.write(content)
                                     temp_path = temp_file.name
                                 
-                                # aggiungo un suffisso univoco al nome del file (_presentazione, _marchio, _immagine)
-                                if file_key == "ppt":
-                                    filename = f"{base_filename}{suffix}.pptx"
+                                # in base al tipo di file, aggiungo un suffisso univoco al nome del file (_presentazione, _marchio, _immagine)
+                                if file_key == "presentation":
+                                    original_ext = presentation_file.name.split('.')[-1].lower()
+                                    filename = f"{base_filename}{suffix}.{original_ext}"
                                 elif file_key == "marchio":
                                     filename = f"{base_filename}{suffix}.{st.session_state['marchio_type']}"
                                 else:  
@@ -387,7 +388,7 @@ if st.session_state["analysis_complete"]:
                             # resetta tutte le variabili di sessione
                             st.session_state["analysis_complete"] = False
                             st.session_state["extracted_content"] = None
-                            st.session_state["ppt_file_content"] = None
+                            st.session_state["presentation_content"] = None
                             st.session_state["reset_uploader"] = True
                             st.session_state["files_uploaded_to_drive"] = False
                             st.session_state["file_upload_ids"] = None

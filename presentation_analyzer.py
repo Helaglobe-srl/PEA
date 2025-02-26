@@ -2,8 +2,9 @@ from pptx import Presentation
 from openai import OpenAI
 import streamlit as st
 import re
+import PyPDF2
 
-class PPTAnalyzer:
+class PresentationAnalyzer:
     def __init__(self):
         self.client = OpenAI(api_key=st.secrets["openai_api_key"])
     
@@ -20,6 +21,32 @@ class PPTAnalyzer:
                     text_content.append(shape.text)
         
         return "\n".join(text_content)
+
+    def extract_text_from_pdf(self, file_path):
+        """
+        Estrae il testo da un file PDF
+        """
+        text_content = []
+        
+        with open(file_path, 'rb') as file:
+            pdf_reader = PyPDF2.PdfReader(file)
+            for page in pdf_reader.pages:
+                text_content.append(page.extract_text())
+        
+        return "\n".join(text_content)
+
+    def extract_text(self, file_path):
+        """
+        Estrae il testo dal file in base all'estensione
+        """
+        file_extension = file_path.lower().split('.')[-1]
+        
+        if file_extension in ['ppt', 'pptx']:
+            return self.extract_text_from_ppt(file_path)
+        elif file_extension == 'pdf':
+            return self.extract_text_from_pdf(file_path)
+        else:
+            raise ValueError(f"Formato file non supportato: {file_extension}")
 
     def analyze_with_gpt(self, text_content):
         """
@@ -58,6 +85,7 @@ class PPTAnalyzer:
         - Non usare MAI il carattere backslash (\)
         - Non usare MAI <br> per andare a capo
         - Usa un vero ritorno a capo dopo ogni elemento con -
+        - Elenca TUTTI gli obiettivi e risultati trovati
         
         Contenuto della presentazione:
         """ + text_content
@@ -94,8 +122,8 @@ class PPTAnalyzer:
 
     def analyze(self, file_path):
         """
-        Funzione principale che coordina l'estrazione e l'analisi del PPT
+        Funzione principale che coordina l'estrazione e l'analisi della presentazione
         """
-        text_content = self.extract_text_from_ppt(file_path)
+        text_content = self.extract_text(file_path)
         gpt_response = self.analyze_with_gpt(text_content)
         return self.extract_sections(gpt_response) 
