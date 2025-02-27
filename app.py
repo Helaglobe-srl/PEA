@@ -168,12 +168,18 @@ image_file = st.file_uploader(
 )
 
 # - Presentazione
+def on_presentation_change():
+    if st.session_state["analysis_complete"]:
+        st.warning("⚠️ Hai cambiato la presentazione. Clicca su 'Carica Files' per aggiornare le informazioni estratte dall'AI.")
+        st.session_state["analysis_complete"] = False
+
 key = "file_uploader_" + str(int(time.time())) if st.session_state["reset_uploader"] else "file_uploader"
 presentation_file = st.file_uploader(
     "Presentazione del progetto *", 
     type=["ppt", "pptx", "pdf"],
-    help="Carica un file PowerPoint o PDF",
-    key=key
+    help="Carica il file della presentazione in formato PowerPoint o PDF",
+    key=key,
+    on_change=on_presentation_change
 )
 
 # controllo che tutti i file siano stati caricati
