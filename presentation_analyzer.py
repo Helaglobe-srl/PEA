@@ -93,7 +93,7 @@ class PresentationAnalyzer:
         response = self.client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "Sei un assistente esperto nell'analisi di presentazioni PowerPoint. Fornisci riassunti strutturati e completi."},
+                {"role": "system", "content": "Sei un assistente esperto nell'analisi di presentazioni in formato PowerPoint o PDF. Fornisci riassunti strutturati e completi."},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=4096,
@@ -124,6 +124,10 @@ class PresentationAnalyzer:
         """
         Funzione principale che coordina l'estrazione e l'analisi della presentazione
         """
-        text_content = self.extract_text(file_path)
-        gpt_response = self.analyze_with_gpt(text_content)
-        return self.extract_sections(gpt_response) 
+        try:
+            text_content = self.extract_text(file_path)
+            gpt_response = self.analyze_with_gpt(text_content)
+            return self.extract_sections(gpt_response)
+        except Exception as e:
+            st.error(f"Errore durante l'analisi della presentazione: {e}")
+            return None
