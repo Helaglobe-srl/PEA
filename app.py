@@ -264,6 +264,13 @@ if st.session_state["analysis_complete"]:
     # Checkbox per i consensi
     st.subheader("Privacy e Consensi")
     
+    ai_consent = st.checkbox(
+        "Acconsento all'utilizzo di tecnologie di Intelligenza Artificiale per l'analisi della presentazione, " +
+        "esclusivamente allo scopo di velocizzare il processo di iscrizione. I contenuti non verranno in alcun modo " +
+        "utilizzati per l'addestramento di modelli e saranno trattati nel rispetto del GDPR 2016/679 e della " +
+        "normativa vigente in materia di protezione dei dati personali *"
+    )
+    
     privacy_consent = st.checkbox(
         "Acconsento al " + 
         "[trattamento dei dati personali](https://www.helaglobe.com/privacy-policy)" +
@@ -300,8 +307,8 @@ if st.session_state["analysis_complete"]:
         st.error("Gli indirizzi email non corrispondono")
     elif not validate_phone_number(telefono):
         st.error("Per favore correggi il numero di telefono prima di procedere")
-    elif not privacy_consent or not jury_consent:
-        st.error("Per favore accetta i consensi obbligatori per procedere (Privacy e Autorizzazione giuria)")
+    elif not privacy_consent or not jury_consent or not ai_consent:
+        st.error("Per favore accetta i consensi obbligatori per procedere (Privacy, Autorizzazione giuria e Analisi AI)")
     else:
         if st.button("Sottometti Iscrizione"):
             with st.spinner("Iscrizione in corso..."):
@@ -363,7 +370,8 @@ if st.session_state["analysis_complete"]:
                         "area_terapeutica": area_terapeutica_string,
                         "privacy_consent": privacy_consent,
                         "jury_consent": jury_consent,
-                        "marketing_consent": marketing_consent
+                        "marketing_consent": marketing_consent,
+                        "ai_consent": ai_consent
                     }
                     
                     summary_data = {

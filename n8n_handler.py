@@ -46,7 +46,8 @@ class N8NHandler:
             "DATA_SOTTOMISSIONE": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "CONSENSO_PRIVACY": 1 if form_data["privacy_consent"] else 0,
             "CONSENSO_GIURIA": 1 if form_data["jury_consent"] else 0,
-            "CONSENSO_MARKETING": 1 if form_data["marketing_consent"] else 0
+            "CONSENSO_MARKETING": 1 if form_data["marketing_consent"] else 0,
+            "CONSENSO_AI": 1 if form_data["ai_consent"] else 0
         }
             
         try:
