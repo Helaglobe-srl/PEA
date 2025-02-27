@@ -56,7 +56,7 @@ st.markdown("<span style='color: red; font-size: 0.8em'>* Campi obbligatori</spa
 # campi obbligatori
 ragione_sociale = st.text_input("Ragione Sociale *")
 tipologia = st.selectbox(
-    "Tipologia *",
+    "Tipologia Candidato *",
     options=TIPOLOGIE,
     index=TIPOLOGIE.index("Azienda Farmaceutica"), 
     help="Seleziona la tipologia"
