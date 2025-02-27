@@ -40,7 +40,7 @@ class EmailHandler:
             # preparo i link ai file caricati in Google Drive
             marchio_link = f"https://drive.google.com/file/d/{file_ids.get('marchio')}/view" if file_ids.get('marchio') else "#"
             image_link = f"https://drive.google.com/file/d/{file_ids.get('image')}/view" if file_ids.get('image') else "#"
-            ppt_link = f"https://drive.google.com/file/d/{file_ids.get('ppt')}/view" if file_ids.get('ppt') else "#"
+            presentation_link = f"https://drive.google.com/file/d/{file_ids.get('presentation')}/view" if file_ids.get('presentation') else "#"
 
             msg = MIMEMultipart()
             msg['From'] = f"Patient Engagement Award – Helaglobe"
@@ -76,7 +76,7 @@ class EmailHandler:
                             <span style="color: #4CAF50; font-size: 18px;">✓</span> Immagine rappresentativa del progetto [<a href="{image_link}" style="color: #0066cc;">Link</a>]
                         </li>
                         <li style="margin-left: 20px;">
-                            <span style="color: #4CAF50; font-size: 18px;">✓</span> Presentazione del progetto [<a href="{ppt_link}" style="color: #0066cc;">Link</a>]
+                            <span style="color: #4CAF50; font-size: 18px;">✓</span> Presentazione del progetto [<a href="{presentation_link}" style="color: #0066cc;">Link</a>]
                         </li>
                     </ul>
                 </div>
