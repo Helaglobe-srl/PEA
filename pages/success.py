@@ -15,7 +15,7 @@ st.info("""
 
     Controlla la tua casella di posta per tutti i dettagli. Se non ricevi l'email, ti preghiamo di controllare anche la cartella dello spam. 
 
-    Per eventuali necessità scrivi a pea@helaglobe.com o chiama al numero 055.4939527.  
+    Per eventuali necessità scrivi a peaward@helaglobe.com o chiama al numero 055.4939527.  
 
     Grazie, 
 
