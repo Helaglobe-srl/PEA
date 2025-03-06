@@ -81,7 +81,7 @@ class EmailHandler:
                     </ul>
                 </div>
                 
-                <p>Per eventuali necessità non esitare a contattarci scrivendo a <a href="mailto:pea@helaglobe.com">pea@helaglobe.com</a> o chiamando il numero 055.4939527.</p>
+                <p>Per eventuali necessità non esitare a contattarci scrivendo a <a href="mailto:peaward@helaglobe.com">peaward@helaglobe.com</a> o chiamando il numero 055.4939527.</p>
                 
                 <p>Per aggiornamenti sul Patient Engagament Award segui la nostra pagina <a href="https://www.linkedin.com/company/helaglobe/">LinkedIn</a> e iscriviti alla newsletter di Helaglobe, visitando il nuovo sito <a href="https://helaglobe.com/">https://helaglobe.com/</a></p>
                 
