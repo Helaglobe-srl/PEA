@@ -9,6 +9,7 @@ from google_drive_upload_handler import GoogleDriveUploadHandler
 from email_handler import EmailHandler
 from n8n_handler import N8NHandler
 from presentation_analyzer import PresentationAnalyzer
+from mailchimp_handler import MailchimpHandler
 
 FOLDER_ID = st.secrets["drive_folder_id"]
 
@@ -16,6 +17,7 @@ drive_handler = GoogleDriveUploadHandler()
 email_handler = EmailHandler()
 n8n_handler = N8NHandler()
 presentation_analyzer = PresentationAnalyzer()
+mailchimp_handler = MailchimpHandler()
 
 if "file_upload_ids" not in st.session_state:
     st.session_state["file_upload_ids"] = None
@@ -397,6 +399,27 @@ if st.session_state["analysis_complete"]:
                             form_data, 
                             st.session_state["file_upload_ids"]
                         )
+
+                        # se l'utente ha dato il consenso marketing, lo aggiungo come contatto in Mailchimp
+                        if marketing_consent:
+                            mailchimp_result = mailchimp_handler.add_subscriber(
+                                email=form_data["mail"],
+                                first_name=form_data["nome_referente"],
+                                last_name=form_data["cognome_referente"],
+                                ruolo=form_data["ruolo"],
+                                azienda=form_data["ragione_sociale"],
+                                telefono=form_data["telefono"],
+                                tipologia=form_data["tipologia"]
+                            )
+
+                            if not mailchimp_result[0]:
+                                # fallimento dell'aggiunta del contatto in Mailchimp => invio email di notifica di errore
+                                error_email_result = email_handler.send_error_notification(
+                                    error_message=mailchimp_result[1],
+                                    user_email=form_data["mail"],
+                                    user_name=f"{form_data['nome_referente']} {form_data['cognome_referente']}"
+                                )
+
                         if email_result is True:
                             st.balloons()
                             # resetta tutte le variabili di sessione

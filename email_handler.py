@@ -115,3 +115,55 @@ class EmailHandler:
         finally:
             if server:
                 server.quit()
+
+    def send_error_notification(self, error_message, user_email, user_name):
+        """
+        Invia una email di notifica all'amministratore quando fallisce l'aggiunta di un contatto a Mailchimp
+        """
+        server = None
+        try:
+            server = self.configure_smtp()
+            if not server:
+                return "Errore di configurazione del server email"
+
+            msg = MIMEMultipart()
+            msg['From'] = f"Patient Engagement Award – Helaglobe"
+            msg['To'] = self.sender_email
+            msg['Subject'] = "Errore Mailchimp - Patient Engagement Award"
+
+            html_body = f"""
+            <html>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <h2>Errore nell'aggiunta di un contatto a Mailchimp</h2>
+                
+                <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <p><strong>Dettagli Errore:</strong></p>
+                    <p style="color: #dc3545;">{error_message}</p>
+                    
+                    <p><strong>Dettagli Utente:</strong></p>
+                    <ul>
+                        <li>Nome: {user_name}</li>
+                        <li>Email: {user_email}</li>
+                    </ul>
+                </div>
+                
+                <p>Per favore verifica il problema e aggiungi manualmente il contatto se necessario.</p>
+                
+                <hr>
+                <p style="font-size: 12px; color: #666;">
+                    Questa è una email automatica. Per favore non rispondere a questo indirizzo.<br>
+                    Data invio: {datetime.now().strftime('%d/%m/%Y %H:%M')}
+                </p>
+            </body>
+            </html>
+            """
+            msg.attach(MIMEText(html_body, 'html'))
+            
+            server.send_message(msg)
+            return True
+            
+        except Exception as e:
+            return f"Errore nell'invio dell'email di notifica: {str(e)}"
+        finally:
+            if server:
+                server.quit()
