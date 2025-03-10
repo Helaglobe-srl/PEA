@@ -13,6 +13,7 @@ class EmailHandler:
         self.password = st.secrets["email"]["password"]
         self.smtp_server = "smtp.gmail.com"  
         self.smtp_port = 587  # porta TLS Gmail
+        self.organizer_email = st.secrets["email"]["organizer"] 
 
     def configure_smtp(self):
         """
@@ -29,7 +30,7 @@ class EmailHandler:
 
     def send_confirmation_email(self, recipient_email, form_data, file_ids):
         """
-        Invia una email di conferma dopo la registrazione
+        Invia una email di conferma dopo la registrazione al partecipante e all'organizzatore (in BCC)
         """
         server = None
         try:
@@ -42,9 +43,11 @@ class EmailHandler:
             image_link = f"https://drive.google.com/file/d/{file_ids.get('image')}/view" if file_ids.get('image') else "#"
             presentation_link = f"https://drive.google.com/file/d/{file_ids.get('presentation')}/view" if file_ids.get('presentation') else "#"
 
+            # creo il messaggio con l'organizzatore in BCC
             msg = MIMEMultipart()
             msg['From'] = f"Patient Engagement Award – Helaglobe"
             msg['To'] = recipient_email
+            msg['Bcc'] = self.organizer_email
             msg['Subject'] = "Conferma registrazione al Patient Engagament Award 2025"
 
             # Corpo email
@@ -99,7 +102,9 @@ class EmailHandler:
             """
             msg.attach(MIMEText(html_body, 'html'))
             
+            # invio email al partecipante e una copia all'organizzatore
             server.send_message(msg)
+            
             return True
             
         except smtplib.SMTPRecipientsRefused:
