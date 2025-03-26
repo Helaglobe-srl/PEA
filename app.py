@@ -390,6 +390,9 @@ if st.session_state["analysis_complete"]:
                         "risultati": risultati
                     }
                     
+                    # salva i dati del form nella session state per poterli recuperare nella pagina di successo
+                    st.session_state["form_data"] = form_data
+                    
                     # invio dati a n8n
                     if n8n_handler.send_data(form_data, st.session_state["file_upload_ids"], summary_data):
                         
@@ -419,10 +422,13 @@ if st.session_state["analysis_complete"]:
                                     user_email=form_data["mail"],
                                     user_name=f"{form_data['nome_referente']} {form_data['cognome_referente']}"
                                 )
-
+                        
                         if email_result is True:
                             st.balloons()
-                            # resetta tutte le variabili di sessione
+                            # non resetto il form_data che serve nella pagina di successo
+                            # st.session_state["form_data"] = form_data
+                            
+                            # resetto tutte le altre variabili di sessione
                             st.session_state["analysis_complete"] = False
                             st.session_state["extracted_content"] = None
                             st.session_state["presentation_content"] = None
