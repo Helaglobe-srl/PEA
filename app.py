@@ -155,7 +155,7 @@ st.subheader("Caricamento File")
 
 # - Logo
 marchio_file = st.file_uploader(
-    "Logo aziendale in alta risoluzione o vettoriale *", 
+    "Logo aziendale (in alta risoluzione o vettoriale) *", 
     type=["png", "jpg", "jpeg", "pdf", "svg"],
     help="Carica il logo aziendale in alta risoluzione o vettoriale, formati accettati: png, jpg, jpeg, pdf, svg",
     key="marchio_uploader"
@@ -163,7 +163,7 @@ marchio_file = st.file_uploader(
 
 # - Immagine di progetto
 image_file = st.file_uploader(
-    "Immagine rappresentativa del progetto (1920x1080 px) *", 
+    "Immagine rappresentativa del progetto (preferibilmente 1920x1080 pixel) *", 
     type=["png", "jpg", "jpeg"],
     help="Carica un'immagine in formato 1920x1080 pixel",
     key="image_uploader"
@@ -177,7 +177,7 @@ def on_presentation_change():
 
 key = "file_uploader_" + str(int(time.time())) if st.session_state["reset_uploader"] else "file_uploader"
 presentation_file = st.file_uploader(
-    "Presentazione del progetto *", 
+    "Presentazione del progetto (in un unico file, formato PowerPoint o PDF) *", 
     type=["ppt", "pptx", "pdf"],
     help="Carica il file della presentazione in formato PowerPoint o PDF",
     key=key,
