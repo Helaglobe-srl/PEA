@@ -62,4 +62,76 @@ def validate_email(email):
     if len(email) > 254:  # limite RFC 5321
         return False
         
-    return True 
+    return True
+
+def validate_text(text):
+    """
+    valida il testo per assicurarsi che non contenga caratteri problematici
+    che potrebbero causare problemi con n8n o json
+    
+    restituisce:
+    - true se il testo è valido
+    - false se il testo contiene caratteri problematici
+    """
+    if not isinstance(text, str):
+        return True
+        
+    # controlla caratteri problematici
+    problematic_chars = ['"', '\\', '{', '}', '[', ']', '<', '>', '&', '#']
+    for char in problematic_chars:
+        if char in text:
+            return False
+            
+    # controlla caratteri di controllo
+    if re.search(r'[\x00-\x1F\x7F]', text):
+        return False
+        
+    return True
+
+def get_invalid_chars(text):
+    """
+    identifica i caratteri problematici nel testo
+    
+    restituisce:
+    - una stringa vuota se non ci sono caratteri problematici
+    - una stringa con i caratteri problematici trovati
+    """
+    if not isinstance(text, str):
+        return ""
+        
+    problematic_chars = ['"', '\\', '{', '}', '[', ']', '<', '>', '&', '#']
+    found_chars = []
+    
+    for char in problematic_chars:
+        if char in text:
+            found_chars.append(char)
+            
+    # aggiungi eventuali caratteri di controllo trovati
+    control_chars = re.findall(r'[\x00-\x1F\x7F]', text)
+    if control_chars:
+        found_chars.extend(['caratteri di controllo'])
+        
+    return ", ".join(found_chars) if found_chars else "" 
+
+def clean_text(self, text):
+        """
+        pulisce il testo da caratteri che potrebbero causare problem
+        """
+        if isinstance(text, str):
+            # replace backslashes
+            text = text.replace('\\', '')
+            # replace quotes with single quotes
+            text = text.replace('"', "'")
+            # replace newlines and carriage returns with spaces
+            text = text.replace('\n', ' ').replace('\r', ' ')
+            # remove control characters
+            text = re.sub(r'[\x00-\x1F\x7F]', '', text)
+            # replace other potentially problematic characters
+            text = text.replace('{', '(').replace('}', ')')
+            text = text.replace('[', '(').replace(']', ')')
+            # remove any HTML/XML tags that might be present
+            text = re.sub(r'<[^>]*>', '', text)
+            # normalize whitespace (replace multiple spaces with a single space)
+            text = re.sub(r'\s+', ' ', text).strip()
+            return text
+        return text

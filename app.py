@@ -3,7 +3,7 @@ import os
 import streamlit as st
 import tempfile
 import time
-from utils.validators import validate_phone_number, validate_email
+from utils.validators import validate_phone_number, validate_email, validate_text, get_invalid_chars
 from utils.constants import AREE_TERAPEUTICHE, TIPOLOGIE, CATEGORIE
 from google_drive_upload_handler import GoogleDriveUploadHandler
 from email_handler import EmailHandler
@@ -57,6 +57,11 @@ st.markdown("<span style='color: red; font-size: 0.8em'>* Campi obbligatori</spa
 
 # campi obbligatori
 ragione_sociale = st.text_input("Ragione Sociale *")
+# validazione del campo ragione sociale
+if ragione_sociale and not validate_text(ragione_sociale):
+    invalid_chars = get_invalid_chars(ragione_sociale)
+    st.error(f"La Ragione Sociale contiene caratteri non consentiti: {invalid_chars}")
+
 tipologia = st.selectbox(
     "Tipologia Candidato *",
     options=TIPOLOGIE,
@@ -71,13 +76,21 @@ if tipologia == "Altro":
     )
     # se l'utente ha inserito una tipologia personalizzata, usa quella invece di "Altro"
     if tipologia_custom:
-        tipologia = tipologia_custom
+        if not validate_text(tipologia_custom):
+            invalid_chars = get_invalid_chars(tipologia_custom)
+            st.error(f"La Tipologia contiene caratteri non consentiti: {invalid_chars}")
+        else:
+            tipologia = tipologia_custom
     else:
         st.error("Per favore specifica la Tipologia")
         tipologia = ""  # imposto a stringa vuota per far fallire la validazione dei campi obbligatori in fondo alla pagina
 
 # titolo progetto
 titolo_progetto = st.text_input("Titolo Progetto *")
+# validazione del campo titolo progetto
+if titolo_progetto and not validate_text(titolo_progetto):
+    invalid_chars = get_invalid_chars(titolo_progetto)
+    st.error(f"Il Titolo Progetto contiene caratteri non consentiti: {invalid_chars}")
 
 # Area Terapeutica multi-selezione
 area_terapeutica_selection = st.multiselect(
@@ -100,7 +113,11 @@ if "Altro" in area_terapeutica:
     )
     # se l'utente seleziona un'area personalizzata (Altro), sostituisci "Altro" con quella
     if area_terapeutica_custom:
-        area_terapeutica = [at for at in area_terapeutica if at != "Altro"] + [area_terapeutica_custom]
+        if not validate_text(area_terapeutica_custom):
+            invalid_chars = get_invalid_chars(area_terapeutica_custom)
+            st.error(f"L'Area Terapeutica personalizzata contiene caratteri non consentiti: {invalid_chars}")
+        else:
+            area_terapeutica = [at for at in area_terapeutica if at != "Altro"] + [area_terapeutica_custom]
     else:
         st.error("Per favore specifica l'Area Terapeutica personalizzata")
         area_terapeutica = [at for at in area_terapeutica if at != "Altro"]  # rimuovo "Altro" se non è specificata l'area custom
@@ -116,9 +133,21 @@ if not area_terapeutica and not has_altro:
 col1, col2 = st.columns(2)
 with col1:
     nome_referente = st.text_input("Nome Referente *")
+    # validazione del campo nome referente
+    if nome_referente and not validate_text(nome_referente):
+        invalid_chars = get_invalid_chars(nome_referente)
+        st.error(f"Il Nome Referente contiene caratteri non consentiti: {invalid_chars}")
 with col2:
     cognome_referente = st.text_input("Cognome Referente *")
+    # validazione del campo cognome referente
+    if cognome_referente and not validate_text(cognome_referente):
+        invalid_chars = get_invalid_chars(cognome_referente)
+        st.error(f"Il Cognome Referente contiene caratteri non consentiti: {invalid_chars}")
 ruolo = st.text_input("Ruolo *")
+# validazione del campo ruolo
+if ruolo and not validate_text(ruolo):
+    invalid_chars = get_invalid_chars(ruolo)
+    st.error(f"Il Ruolo contiene caratteri non consentiti: {invalid_chars}")
 
 # mail e conferma mail
 col1, col2 = st.columns(2)
@@ -254,6 +283,10 @@ if st.session_state["analysis_complete"]:
         height=200,
         help="Questa sintesi verrà utilizzata per l'Ebook. Max 5 frasi."
     )
+    # validazione del campo sintesi_ebook
+    if sintesi_ebook and not validate_text(sintesi_ebook):
+        invalid_chars = get_invalid_chars(sintesi_ebook)
+        st.error(f"La Sintesi per l'Ebook contiene caratteri non consentiti: {invalid_chars}")
     
     obiettivi = st.text_area(
         "Obiettivi:",
@@ -261,6 +294,10 @@ if st.session_state["analysis_complete"]:
         height=200,
         help="Lista degli obiettivi principali del progetto"
     )
+    # validazione del campo obiettivi
+    if obiettivi and not validate_text(obiettivi):
+        invalid_chars = get_invalid_chars(obiettivi)
+        st.error(f"Gli Obiettivi contengono caratteri non consentiti: {invalid_chars}")
     
     risultati = st.text_area(
         "Risultati:",
@@ -268,6 +305,10 @@ if st.session_state["analysis_complete"]:
         height=200,
         help="Lista dei risultati principali raggiunti"
     )
+    # validazione del campo risultati
+    if risultati and not validate_text(risultati):
+        invalid_chars = get_invalid_chars(risultati)
+        st.error(f"I Risultati contengono caratteri non consentiti: {invalid_chars}")
     
     # Checkbox per i consensi
     st.subheader("Privacy e Consensi")
