@@ -35,7 +35,7 @@ with st.form("feedback_form"):
         "Quanto ti è piaciuto il processo di candidatura?", 
         min_value=1, 
         max_value=5, 
-        value=4
+        value=5
     )
     
     # 2. Opzione si/no
