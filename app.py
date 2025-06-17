@@ -294,10 +294,6 @@ if st.session_state["analysis_complete"]:
         height=200,
         help="Lista degli obiettivi principali del progetto"
     )
-    # validazione del campo obiettivi
-    if obiettivi and not validate_text(obiettivi):
-        invalid_chars = get_invalid_chars(obiettivi)
-        st.error(f"Gli Obiettivi contengono caratteri non consentiti: {invalid_chars}")
     
     risultati = st.text_area(
         "Risultati:",
@@ -305,10 +301,6 @@ if st.session_state["analysis_complete"]:
         height=200,
         help="Lista dei risultati principali raggiunti"
     )
-    # validazione del campo risultati
-    if risultati and not validate_text(risultati):
-        invalid_chars = get_invalid_chars(risultati)
-        st.error(f"I Risultati contengono caratteri non consentiti: {invalid_chars}")
     
     # Checkbox per i consensi
     st.subheader("Privacy e Consensi")

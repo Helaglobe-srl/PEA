@@ -82,8 +82,8 @@ def validate_text(text):
         if char in text:
             return False
             
-    # controlla caratteri di controllo
-    if re.search(r'[\x00-\x1F\x7F]', text):
+    # controlla caratteri di controllo, escludendo newline, carriage return e tab
+    if re.search(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]', text):
         return False
         
     return True
@@ -106,8 +106,8 @@ def get_invalid_chars(text):
         if char in text:
             found_chars.append(char)
             
-    # aggiungi eventuali caratteri di controllo trovati
-    control_chars = re.findall(r'[\x00-\x1F\x7F]', text)
+    # aggiungi eventuali caratteri di controllo trovati, escludendo newline, carriage return e tab
+    control_chars = re.findall(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]', text)
     if control_chars:
         found_chars.extend(['caratteri di controllo'])
         
