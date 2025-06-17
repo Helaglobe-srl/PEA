@@ -113,7 +113,7 @@ def get_invalid_chars(text):
         
     return ", ".join(found_chars) if found_chars else "" 
 
-def clean_text(self, text):
+def clean_text(text):
         """
         pulisce il testo da caratteri che potrebbero causare problem
         """
